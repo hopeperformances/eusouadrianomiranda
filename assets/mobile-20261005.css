@@ -1,0 +1,32 @@
+/* Native horizontal scrolling; no carousel library or autoplay. */
+.hope-carousel{width:100%;min-width:0;max-width:100%;font-family:Poppins,sans-serif}
+.hope-carousel-track{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#bd9849 transparent;padding:8px 2px 14px;align-items:stretch}
+.hope-carousel-track>*{flex:0 0 calc((100% - 44px)/3);min-width:0;scroll-snap-align:start;scroll-snap-stop:normal;box-sizing:border-box}
+.hope-carousel-nav{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:10px 0 12px;color:#bd9849;font-size:13px}
+.hope-carousel-hint{margin-right:auto}.hope-carousel-nav button{width:44px;height:44px;padding:0;border:1px solid #bd9849;border-radius:50%;background:transparent;color:#bd9849;font-size:22px;cursor:pointer}
+.hope-carousel-nav button:disabled{opacity:.35;cursor:default}.hope-carousel-nav[hidden]{display:none}
+.hope-carousel-track:focus-visible,.hope-carousel-nav button:focus-visible,.hope-video-poster:focus-visible{outline:3px solid #bd9849;outline-offset:4px}
+.hope-review{background:#fff;color:#252525;border-radius:12px;padding:24px;box-shadow:0 3px 12px #0002;text-align:left;white-space:normal}
+.hope-review-source{font-size:12px;font-weight:600;margin:0 0 12px;color:#555}.hope-review h3{font:600 17px/1.4 Poppins,sans-serif;margin:0 0 6px;color:#252525}
+.hope-review-stars{color:#946b16;font-size:22px;letter-spacing:2px;margin:0 0 12px}.hope-review-text{font-size:14px;line-height:1.7;margin:0;overflow-wrap:anywhere}
+.hope-video{position:relative;width:100%;aspect-ratio:16/9;min-height:200px;background:#101010;border-radius:10px;overflow:hidden;margin-top:22px}
+.hope-video-poster{display:block;position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;border-radius:10px;background:#101010;color:#fff;cursor:pointer;text-align:center}
+.hope-video-poster img{width:100%;height:100%;object-fit:cover;display:block;opacity:.85}
+.hope-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:64px;height:48px;border-radius:12px;background:#bd9849;color:#17120b;font-size:23px;box-shadow:0 3px 16px #0006}
+.hope-video-caption{position:absolute;bottom:0;left:0;right:0;padding:26px 16px 12px;background:linear-gradient(transparent,#000d);font:500 14px/1.4 Poppins,sans-serif;color:#fff}
+.hope-video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.hope-channel-card .hope-video{margin-top:0}.hope-blog-carousel .home-blog-card{display:flex}.hope-blog-carousel .home-blog-card>a{width:100%}
+/* Remove inherited Elementor height and duplicated outer/inner padding on the gold CTA. */
+.elementor-6 .elementor-element.elementor-element-494ff9f{--min-height:0px;--padding-top:0px;--padding-bottom:0px;min-height:0!important;height:auto!important;padding:0!important}
+.elementor-6 .elementor-element.elementor-element-494ff9f>.e-con-inner{min-height:0!important;height:auto!important;gap:12px!important;padding:28px 24px!important;justify-content:center!important}
+.elementor-6 .elementor-element.elementor-element-494ff9f p{margin:0!important}
+@media(max-width:767px){
+ .hope-carousel-track{gap:16px;padding-bottom:12px}.hope-carousel-track>*{flex-basis:87%}
+ .hope-carousel-nav{gap:8px;font-size:12px}.hope-review{padding:22px 20px}
+ .hope-video{margin-top:18px}.hope-video-caption{font-size:12px}
+ .elementor-6 .elementor-element.elementor-element-494ff9f>.e-con-inner{padding:24px 18px!important;gap:10px!important}
+}
+@media(prefers-reduced-motion:reduce){.hope-carousel-track{scroll-behavior:auto}}
+.elementor-6 .elementor-element.elementor-element-494ff9f .elementor-widget-container{padding:0!important;margin:0!important}
+.hope-video-caption{white-space:normal;overflow-wrap:anywhere}
+.elementor-6 .elementor-element.elementor-element-494ff9f .elementor-element-ade3b17{opacity:1!important;visibility:visible!important;animation:none!important;transform:none!important}
