@@ -1,0 +1,229 @@
+---
+import '../styles/global.css';
+import { Image } from 'astro:assets';
+import Icon from '../components/Icon.astro';
+import logo from '../assets/img/logo-dra-thuelen-mellao.png';
+import { BRAND, UNITS, TREATMENTS, DEFAULT_WA } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  schema?: object[];
+  ogImage?: string;
+  noindex?: boolean;
+}
+const { title, description, schema = [], ogImage, noindex = false } = Astro.props;
+const site = Astro.site!.toString().replace(/\/$/, '');
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const og = ogImage ? new URL(ogImage, Astro.site).toString() : `${site}/og.jpg`;
+
+// Entidade base, repetida em todas as páginas e referenciada por @id.
+const ORG_ID = `${site}/#organizacao`;
+const PERSON_ID = `${site}/#dra-thuelen`;
+const baseGraph = [
+  {
+    '@type': 'Organization',
+    '@id': ORG_ID,
+    name: BRAND.name,
+    url: `${site}/`,
+    logo: `${site}/icon-512.png`,
+    sameAs: [BRAND.instagram],
+    founder: { '@id': PERSON_ID },
+    subOrganization: UNITS.map((u) => ({ '@id': `${site}/#unidade-${u.id}` })),
+  },
+  {
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    name: BRAND.doctor,
+    jobTitle: BRAND.role,
+    description: 'Cirurgiã-dentista em Brusque - SC, especialista em quatro áreas, mestranda e MBA. Habilitada em sedação para crianças e adultos e experiente com laser de alta e baixa potência.',
+    identifier: { '@type': 'PropertyValue', propertyID: 'CRO-SC', value: '17911' },
+    worksFor: { '@id': ORG_ID },
+    sameAs: [BRAND.instagram],
+  },
+  ...UNITS.map((u) => ({
+    '@type': 'Dentist',
+    '@id': `${site}/#unidade-${u.id}`,
+    name: `${BRAND.name} – ${u.name}`,
+    url: `${site}/`,
+    image: `${site}/og.jpg`,
+    telephone: `+${u.whatsapp}`,
+    parentOrganization: { '@id': ORG_ID },
+    employee: { '@id': PERSON_ID },
+    hasMap: u.mapsUrl,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: u.street,
+      addressLocality: BRAND.city,
+      addressRegion: BRAND.region,
+      ...(u.postalCode ? { postalCode: u.postalCode } : {}),
+      addressCountry: 'BR',
+    },
+    areaServed: BRAND.areaServed.map((c) => ({ '@type': 'City', name: c })),
+    paymentAccepted: 'Atendimento particular com recibo para reembolso',
+    medicalSpecialty: ['Dentistry'],
+  })),
+  {
+    '@type': 'WebSite',
+    '@id': `${site}/#site`,
+    url: `${site}/`,
+    name: BRAND.name,
+    inLanguage: 'pt-BR',
+    publisher: { '@id': ORG_ID },
+  },
+];
+const ld = { '@context': 'https://schema.org', '@graph': [...baseGraph, ...schema] };
+const isHome = Astro.url.pathname === '/';
+const h = (id: string) => (isHome ? `#${id}` : `/#${id}`);
+---
+<!doctype html>
+<html lang="pt-BR" class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#062a29" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/icon-32.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
+    <link rel="preload" href="/fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jost-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={BRAND.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <script is:inline>document.documentElement.classList.replace('no-js','js')</script>
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+    <div class="progress" aria-hidden="true"></div>
+
+    <header class="hdr" data-hdr>
+      <div class="hdr__top">
+        <div class="wrap">
+          <div style="display:flex;gap:26px">
+            {UNITS.map((u) => (
+              <span><Icon name="pin" />{u.name}: {u.street}</span>
+            ))}
+          </div>
+          <a href={BRAND.instagram} target="_blank" rel="noopener" style="display:inline-flex;gap:8px;align-items:center"><Icon name="ig" class="" /> @centrodrathuelen</a>
+        </div>
+      </div>
+      <div class="hdr__main">
+        <div class="wrap">
+          <a class="brand" href="/">
+            <Image src={logo} alt="" width={44} height={44} densities={[1, 2]} loading="eager" />
+            <span><b>Dra. Thuelen Mellão</b><small>Odontologia · Brusque</small></span>
+          </a>
+          <nav class="nav" aria-label="Principal">
+            <a href={h('sobre')}>A Doutora</a>
+            <a href={h('tratamentos')}>Tratamentos</a>
+            <a href={h('infantil')}>Infantil</a>
+            <a href={h('avaliacao')}>Monte sua avaliação</a>
+            <a href={h('unidades')}>Unidades</a>
+          </nav>
+          <a class="btn btn--blush hdr__cta" href={h('avaliacao')} data-magnetic>Agendar avaliação <Icon name="arrow" class="arrow" /></a>
+          <button class="burger" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mnav" data-burger><span></span></button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="mnav" id="mnav" aria-label="Menu móvel">
+      <a href={h('sobre')}><small>01</small>A Doutora</a>
+      <a href={h('tratamentos')}><small>02</small>Tratamentos</a>
+      <a href={h('infantil')}><small>03</small>Infantil</a>
+      <a href={h('avaliacao')}><small>04</small>Monte sua avaliação</a>
+      <a href={h('duvidas')}><small>05</small>Dúvidas</a>
+      <a href={h('unidades')}><small>06</small>Unidades</a>
+      <div class="mnav__foot">{BRAND.doctor} · {BRAND.cro}<br />Centro e Paquetá · Brusque - SC</div>
+    </nav>
+
+    <main id="conteudo">
+      <slot />
+    </main>
+
+    <footer class="ftr">
+      <div class="wrap">
+        <div class="ftr__grid">
+          <div>
+            <a class="brand" href="/">
+              <Image src={logo} alt="Logo Dra. Thuelen Mellão" width={52} height={52} densities={[1, 2]} loading="lazy" />
+              <span><b>Centro Dra. Thuelen</b><small>Odontologia · Brusque - SC</small></span>
+            </a>
+            <p style="max-width:38ch">Cuidamos da sua saúde bucal aliando dedicação clínica e cuidado humano em dois consultórios em Brusque, SC.</p>
+          </div>
+          <div>
+            <p class="ftr__h">Tratamentos</p>
+            <ul>
+              {TREATMENTS.map((t) => <li><a href={`/tratamentos/${t.slug}/`}>{t.title}</a></li>)}
+            </ul>
+          </div>
+          <div>
+            <p class="ftr__h">Unidades</p>
+            <ul>
+              {UNITS.map((u) => (
+                <li>
+                  <b style="color:#fff;font-weight:500">{u.name}</b><br />
+                  {u.street} – {u.district}<br />
+                  <a href={`https://wa.me/${u.whatsapp}`} target="_blank" rel="noopener">WhatsApp {u.phoneLabel}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p class="ftr__h">Clínica</p>
+            <ul>
+              <li><a href={h('sobre')}>Quem é a Dra. Thuelen</a></li>
+              <li><a href={h('duvidas')}>Perguntas frequentes</a></li>
+              <li><a href={BRAND.instagram} target="_blank" rel="noopener">Instagram</a></li>
+              <li><a href={DEFAULT_WA} target="_blank" rel="noopener">Agendar pelo WhatsApp</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="ftr__legal">
+          <span>Resp. Técnica: {BRAND.doctor} · {BRAND.role} · {BRAND.cro}</span>
+          <span>© {new Date().getFullYear()} {BRAND.name}</span>
+          <a class="ftr__credit" href="https://metodohopestart.com.br/" target="_blank" rel="noopener" aria-label="Site desenvolvido pela Hope Performance Digitais">
+            <img src="/hope-credit.webp" width="104" height="42" loading="lazy" decoding="async" alt="Hope Performance Digitais" />
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <nav class="mbar" aria-label="Ações rápidas" data-mbar>
+      <a href={h('unidades')}><Icon name="pin" />Unidades</a>
+      <a href={h('avaliacao')}><Icon name="plan" />Avaliação</a>
+      <a class="mbar__wa" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" />Agendar</a>
+    </nav>
+
+    <dialog class="sheet" data-sheet aria-labelledby="sheet-t">
+      <form method="dialog" class="sheet__in">
+        <button class="sheet__x" value="close" aria-label="Fechar">×</button>
+        <p class="kicker">Agendar avaliação</p>
+        <h2 id="sheet-t" class="sheet__t">Qual unidade fica melhor para você?</h2>
+        {UNITS.map((u) => (
+          <a class="sheet__opt" href={`https://wa.me/${u.whatsapp}?text=${encodeURIComponent(`Olá! Vim pelo site e gostaria de agendar uma avaliação com a Dra. Thuelen na ${u.name}.`)}`} target="_blank" rel="noopener" data-unit-link>
+            <Icon name="pin" />
+            <span><b>{u.name}</b><small>{u.street} – {u.district}</small></span>
+            <Icon name="arrow" class="arrow" />
+          </a>
+        ))}
+      </form>
+    </dialog>
+
+    <script>
+      import '../scripts/main.ts';
+    </script>
+  </body>
+</html>

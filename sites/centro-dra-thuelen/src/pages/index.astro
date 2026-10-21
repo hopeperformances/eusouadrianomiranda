@@ -1,0 +1,522 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Split from '../components/Split.astro';
+import { Picture } from 'astro:assets';
+import heroImg from '../assets/img/dra-thuelen-mellao-dentista-brusque.webp';
+import recepcao from '../assets/img/recepcao-centro-dra-thuelen-brusque.webp';
+import kids from '../assets/img/odontopediatria-brusque.webp';
+import logo from '../assets/img/logo-dra-thuelen-mellao.png';
+import { BRAND, UNITS, TREATMENTS, CREDENTIALS, DIFFERENTIALS, REVIEWS, FAQ, DEFAULT_WA, wa } from '../data/site';
+
+const site = Astro.site!.toString().replace(/\/$/, '');
+const title = 'Dentista em Brusque | Centro Dra. Thuelen Mellão';
+const description =
+  'Dentista em Brusque - SC com duas unidades (Centro e Paquetá). Lentes de contato, implantes, alinhadores, odontopediatria e sedação. Agende pelo WhatsApp.';
+
+const schema = [
+  {
+    '@type': 'WebPage',
+    '@id': `${site}/#pagina`,
+    url: `${site}/`,
+    name: title,
+    description,
+    isPartOf: { '@id': `${site}/#site` },
+    about: { '@id': `${site}/#organizacao` },
+    inLanguage: 'pt-BR',
+  },
+  {
+    '@type': 'FAQPage',
+    '@id': `${site}/#faq`,
+    mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+  {
+    '@type': 'ItemList',
+    '@id': `${site}/#tratamentos`,
+    name: 'Tratamentos odontológicos do Centro Dra. Thuelen em Brusque',
+    itemListElement: TREATMENTS.map((t, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Service',
+        name: t.title,
+        description: t.text,
+        url: `${site}/tratamentos/${t.slug}/`,
+        provider: { '@id': `${site}/#organizacao` },
+        areaServed: { '@type': 'City', name: 'Brusque' },
+      },
+    })),
+  },
+];
+
+const rotWords = ['sorriso', 'autoestima', 'bem-estar'];
+
+// Ferramenta: cada queixa aponta para tratamentos reais da clínica.
+const NEEDS = [
+  { id: 'estetica', label: 'Mudar cor ou formato dos dentes', sub: 'Lentes, facetas', icon: 'sparkle', t: ['lentes-de-contato-dental', 'facetas-esteticas'] },
+  { id: 'alinhar', label: 'Alinhar os dentes', sub: 'Alinhadores, aparelhos', icon: 'align', t: ['alinhadores-invisiveis', 'aparelhos-ortodonticos'] },
+  { id: 'repor', label: 'Repor dente perdido', sub: 'Implantes', icon: 'tooth', t: ['implantes-dentarios'] },
+  { id: 'dor', label: 'Dor ou sensibilidade', sub: 'Canal, avaliação', icon: 'bolt', t: ['tratamento-de-canal'] },
+  { id: 'limpeza', label: 'Limpeza e check-up', sub: 'Prevenção', icon: 'drop', t: ['limpeza-e-prevencao'] },
+  { id: 'sono', label: 'Ronco, bruxismo ou dor ao acordar', sub: 'Placas e aparelhos', icon: 'moon', t: ['ronco-e-bruxismo'] },
+  { id: 'filho', label: 'Consulta para meu filho', sub: 'Atendimento lúdico', icon: 'kid', t: [] },
+  { id: 'medo', label: 'Tenho medo de dentista', sub: 'Sedação e laser', icon: 'heart', t: [] },
+];
+const WHEN = [
+  { id: 'urgente', label: 'O quanto antes', sub: 'Estou com incômodo' },
+  { id: 'semanas', label: 'Nas próximas semanas', sub: 'Quero planejar' },
+  { id: 'entender', label: 'Só quero entender as opções', sub: 'Sem pressa' },
+];
+const plannerData = {
+  needs: NEEDS.map(({ id, label, t }) => ({ id, label, t })),
+  when: WHEN.map(({ id, label }) => ({ id, label })),
+  units: UNITS.map(({ id, name, whatsapp, street }) => ({ id, name, whatsapp, street })),
+  treatments: Object.fromEntries(TREATMENTS.map((t) => [t.slug, t.title])),
+};
+---
+<Base title={title} description={description} schema={schema}>
+  <!-- ================= HERO ================= -->
+  <section class="hero on-dark" data-anim aria-labelledby="h1">
+    <div class="hero__aurora" aria-hidden="true"></div>
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <span class="hero__eyebrow intro"><i></i><span><span class="hide-sm">Consultório odontológico em </span>Brusque - SC · {BRAND.cro}</span></span>
+        <h1 class="h1" id="h1">
+          <span class="split split--intro" style="--d:.1s">
+            <span class="w"><span style="--i:0">Dentista</span></span> <span class="w"><span style="--i:1">em</span></span> <span class="w"><span style="--i:2">Brusque</span></span>
+            <span class="w"><span style="--i:3">que</span></span> <span class="w"><span style="--i:4">cuida</span></span> <span class="w"><span style="--i:5">do</span></span> <span class="w"><span style="--i:6">seu</span></span>
+          </span>
+          <span class="rot" data-rot aria-hidden="true">
+            {rotWords.map((w, i) => <span class={i === 0 ? 'is-on' : ''}>{w}.</span>)}
+          </span>
+          <span class="sr-only">sorriso, autoestima e bem-estar.</span>
+        </h1>
+        <p class="hero__lead intro" style="--d:.5s">
+          Com a {BRAND.doctor}, ciência, tecnologia e cuidado humano caminham juntos<span class="hide-sm">: planejamento minucioso,
+          sedação para quem tem medo e duas unidades em Brusque para receber você e sua família</span>.
+        </p>
+        <div class="hero__ctas intro" style="--d:.65s">
+          <a class="btn btn--blush" href="#avaliacao" data-magnetic><Icon name="plan" />Monte sua avaliação</a>
+          <a class="btn btn--ghost" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" /><span><span class="hide-sm">Falar no </span>WhatsApp</span></a>
+        </div>
+        <ul class="hero__proof intro" style="--d:.8s">
+          <li><Icon name="cap" />Especialista em 4 áreas</li>
+          <li><Icon name="shield" />Sedação para crianças e adultos</li>
+          <li><Icon name="building" />Bloco cirúrgico próprio</li>
+        </ul>
+      </div>
+
+      <div class="hero__visual" data-tilt>
+        <svg class="orbit" viewBox="0 0 200 200" aria-hidden="true">
+          <defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
+          <text><textPath href="#circ">Dra. Thuelen Mellão • Cirurgiã-Dentista • {BRAND.cro} •</textPath></text>
+        </svg>
+        <span class="orbit__core" aria-hidden="true"><Icon name="tooth" /></span>
+        <div class="arch">
+          <Picture
+            src={heroImg}
+            formats={['avif']} fallbackFormat="webp"
+            widths={[380, 560, 768]}
+            sizes="(min-width: 900px) 520px, 90vw"
+            alt="Dra. Thuelen Mellão, cirurgiã-dentista, em seu consultório em Brusque"
+            loading="eager"
+            fetchpriority="high"
+          />
+          <div class="arch__grid" aria-hidden="true"></div>
+        </div>
+        <span class="chip chip--a"><Icon name="laser" />Laser de alta e baixa potência</span>
+        <span class="chip chip--b"><Icon name="scan" />Escaneamento digital 3D</span>
+        <div class="tag">
+          <b>{BRAND.doctor}</b>
+          <small>{BRAND.role} · {BRAND.cro}</small>
+        </div>
+      </div>
+    </div>
+    <svg class="hero__wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V40C240 0 480 0 720 30s480 60 720 10v50Z" fill="currentColor" /></svg>
+  </section>
+
+  <div class="marquee" aria-hidden="true" data-anim>
+    <div class="marquee__track">
+      {[0, 1].map(() => (
+        <Fragment>{TREATMENTS.map((t) => <span>{t.title}</span>)}<span>Odontopediatria</span></Fragment>
+      ))}
+    </div>
+  </div>
+
+  <!-- ================= SOBRE ================= -->
+  <section class="sec about" id="sobre" aria-labelledby="sobre-t">
+    <div class="wrap">
+      <div class="about__grid">
+        <div class="about__years" data-reveal>
+          <span class="about__num"><span data-count="10">10</span><sup>+</sup></span>
+          <strong>Anos dedicados à saúde</strong>
+          <p>Transformando sorrisos e vidas de crianças e adultos em Brusque.</p>
+        </div>
+
+        <figure class="about__photo" data-reveal="mask">
+          <Picture src={recepcao} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 960px) 360px, 92vw" alt="Recepção do Centro Dra. Thuelen em Brusque, com a marca Thuelen Mellão na parede" loading="lazy" />
+          <figcaption><Icon name="building" />Ambiente planejado para você se sentir em casa</figcaption>
+        </figure>
+
+        <div class="about__text">
+          <span class="kicker" data-reveal>Quem é a Dra. Thuelen</span>
+          <Split as="h2" class="h2" id="sobre-t" text="Quem é a *Dra. Thuelen Mellão?*" />
+          <p class="answer" data-reveal>
+            A Dra. Thuelen Mellão é cirurgiã-dentista ({BRAND.cro}) e responsável técnica pelo Centro Dra. Thuelen, em Brusque - SC.
+            Especialista em quatro áreas, mestranda e MBA, é pesquisadora, gestora e empresária, e atende crianças e adultos em duas
+            unidades com bloco cirúrgico próprio.
+          </p>
+          <blockquote data-reveal>
+            “Desde sempre, sou fascinada pelo corpo humano. Ele é uma máquina perfeita… e o sorriso é a porta de entrada.”
+          </blockquote>
+          <p data-reveal>
+            Com mais de 10 anos de dedicação à área da saúde, ela encontrou na odontologia a sua verdadeira paixão. Acredita que
+            cada sorriso tem uma história, e o seu propósito é ajudar crianças e adultos a descobrirem sua melhor versão, com
+            autoestima, bem-estar e qualidade de vida.
+          </p>
+          <div class="about__sign" data-reveal>
+            <img src={logo.src} width="52" height="52" alt="" loading="lazy" decoding="async" />
+            <span><b>{BRAND.doctor}</b><small>Responsável Técnica · {BRAND.cro}</small></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= JORNADA ================= -->
+  <section class="sec journey" aria-labelledby="jornada-t">
+    <div class="wrap">
+      <div class="sec__head sec__head--center">
+        <span class="kicker" data-reveal>Do primeiro contato ao pós-tratamento</span>
+        <Split as="h2" class="h2" id="jornada-t" text="Como é o seu *tratamento* na clínica?" />
+        <p class="lead" data-reveal>Tudo começa ouvindo você. Depois vem um plano claro, um tratamento confortável e acompanhamento de perto.</p>
+      </div>
+      <ol class="steps" data-steps>
+        <span class="steps__line" aria-hidden="true"><i></i></span>
+        <li class="step" data-reveal style="--d:0s">
+          <span class="step__ico"><Icon name="ear" /></span>
+          <div><h3>Escuta e avaliação</h3><p>A primeira consulta é o momento de ouvir você e entender sua necessidade real.</p></div>
+        </li>
+        <li class="step" data-reveal style="--d:.1s">
+          <span class="step__ico"><Icon name="scan" /></span>
+          <div><h3>Planejamento minucioso</h3><p>Cada caso é planejado em detalhe, com explicações claras e sem termos difíceis.</p></div>
+        </li>
+        <li class="step" data-reveal style="--d:.2s">
+          <span class="step__ico"><Icon name="laser" /></span>
+          <div><h3>Tratamento com conforto</h3><p>Sedação para crianças e adultos e laser de alta e baixa potência quando indicado.</p></div>
+        </li>
+        <li class="step" data-reveal style="--d:.3s">
+          <span class="step__ico"><Icon name="heart" /></span>
+          <div><h3>Acompanhamento próximo</h3><p>A equipe fica ao seu lado antes, durante e depois, para garantir o resultado.</p></div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= CREDENCIAIS ================= -->
+  <section class="sec creds on-dark" aria-labelledby="cred-t">
+    <svg class="creds__mono" viewBox="0 0 200 160" fill="none" aria-hidden="true">
+      <path pathLength="1" d="M10 20h180M100 20v130M60 20c0 30 15 50 40 60M140 20c0 30-15 50-40 60M70 150h60" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
+    </svg>
+    <div class="wrap">
+      <div class="sec__head">
+        <span class="kicker" data-reveal>Formação e estrutura</span>
+        <Split as="h2" class="h2" id="cred-t" text="Por que a formação da Dra. Thuelen *faz diferença?*" />
+        <p class="lead" data-reveal>Estudo constante, tecnologia e estrutura própria. É assim que ela entrega segurança em cada etapa.</p>
+      </div>
+      <div class="bento">
+        {CREDENTIALS.map((c, i) => (
+          <article class:list={['bento__item', i === 0 && 'bento__item--hero']} data-reveal="scale" data-spot style={`--d:${i * 0.08}s`}>
+            <Icon name={['cap', 'shield', 'laser', 'building'][i]} class="bento__ico" />
+            <span class="bento__k">{c.kicker}</span>
+            <h3>{c.title}</h3>
+            <p>{c.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRATAMENTOS ================= -->
+  <section class="sec treat" id="tratamentos" aria-labelledby="trat-t">
+    <div class="wrap">
+      <div class="sec__head">
+        <span class="kicker" data-reveal>Especialidades</span>
+        <Split as="h2" class="h2" id="trat-t" text="Quais tratamentos a Dra. Thuelen faz *em Brusque?*" />
+        <p class="answer" data-reveal>
+          No Centro Dra. Thuelen você encontra lentes de contato dental, facetas estéticas, alinhadores invisíveis, implantes,
+          aparelhos ortodônticos, limpeza e prevenção, tratamento de canal e tratamento de ronco e bruxismo, além de odontopediatria,
+          nas unidades Centro e Paquetá.
+        </p>
+      </div>
+
+      <div class="chips" role="group" aria-label="Escolha um tratamento" data-chips>
+        {TREATMENTS.map((t, i) => <button type="button" aria-current={i === 0 ? 'true' : 'false'} data-chip={i}>{t.short}</button>)}
+      </div>
+      <div class="chapters" data-chapters>
+        <div class="chapters__media" aria-hidden="true">
+          <span class="chapters__count"><span data-ch-count>01</span> / {String(TREATMENTS.length).padStart(2, '0')}</span>
+          {TREATMENTS.map((t, i) => (
+            <figure class={i === 0 ? 'is-on' : ''} data-ch-fig={i}>
+              <Picture src={t.img} formats={['avif']} fallbackFormat="webp" widths={[480, 720]} sizes="560px" alt="" loading="lazy" />
+              <figcaption>{t.tag}</figcaption>
+            </figure>
+          ))}
+        </div>
+        <div class="chapters__list" data-ch-list>
+          {TREATMENTS.map((t, i) => (
+            <article class="chapter" data-ch={i} data-reveal>
+              <div class="chapter__img">
+                <Picture src={t.img} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 1000px) 1px, 92vw" alt={t.alt} loading="lazy" />
+              </div>
+              <div class="chapter__body">
+                <div class="chapter__meta"><b>{String(i + 1).padStart(2, '0')}</b>{t.tag}</div>
+                <h3>{t.title}</h3>
+                <p>{t.text}</p>
+                <div class="chapter__actions">
+                  <a class="btn" href={wa(UNITS[0].whatsapp, `Olá! Vim pelo site e quero saber mais sobre ${t.title} com a Dra. Thuelen.`)} target="_blank" rel="noopener" data-pick data-msg={`Olá! Vim pelo site e quero saber mais sobre ${t.title} com a Dra. Thuelen.`}>
+                    <Icon name="wa" />Quero avaliar
+                  </a>
+                  <a class="link-arrow" href={`/tratamentos/${t.slug}/`}>Entender o tratamento <Icon name="arrow" class="arrow" /></a>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+      <div class="chapters__dots" aria-hidden="true">{TREATMENTS.map((_, i) => <i class={i === 0 ? 'is-on' : ''} data-ch-dot={i}></i>)}</div>
+    </div>
+  </section>
+
+  <!-- ================= DIFERENCIAIS ================= -->
+  <section class="sec why" aria-labelledby="why-t">
+    <div class="wrap why__grid">
+      <div class="why__aside">
+        <span class="kicker" data-reveal>Por que nos escolher</span>
+        <Split as="h2" class="h2" id="why-t" text="Por que tantas famílias escolhem o *Centro Dra. Thuelen?*" />
+        <p class="lead" data-reveal>Odontologia de qualidade vai além da técnica. É sobre cuidado, escuta e dedicação para entregar os melhores resultados com tranquilidade.</p>
+        <div data-reveal><a class="btn btn--ink" href="#avaliacao" data-magnetic>Quero ser atendido assim <Icon name="arrow" class="arrow" /></a></div>
+      </div>
+      <ol class="why__list">
+        {DIFFERENTIALS.map((d, i) => (
+          <li data-reveal style={`--d:${i * 0.06}s`}><h3>{d.title}</h3><p>{d.text}</p></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= INFANTIL ================= -->
+  <section class="sec kids" data-anim id="infantil" aria-labelledby="kids-t">
+    <div class="wrap kids__grid">
+      <div class="kids__photo" data-reveal="scale">
+        <span class="kids__float" aria-hidden="true">🧸</span>
+        <span class="kids__float" aria-hidden="true">✨</span>
+        <span class="kids__float" aria-hidden="true">🎈</span>
+        <div class="kids__blob">
+          <Picture src={kids} formats={['avif']} fallbackFormat="webp" widths={[400, 600, 800]} sizes="(min-width: 960px) 520px, 92vw" alt="Dra. Thuelen abraçada a um paciente criança após a consulta" loading="lazy" />
+        </div>
+        <div class="kids__badge"><b>Sem trauma</b>Espaço lúdico e adaptado para os pequenos.</div>
+      </div>
+      <div>
+        <span class="kicker" data-reveal>Odontopediatria</span>
+        <Split as="h2" class="h2" id="kids-t" text="Como é o atendimento *infantil* na clínica?" />
+        <p class="answer" data-reveal style="margin-top:20px">
+          O atendimento infantil é pautado pela paciência e pela adaptação. A Dra. Thuelen usa uma abordagem lúdica e acolhedora,
+          com brincadeiras e uma linguagem que a criança entende, para que ela crie confiança com o dentista e cresça sem traumas.
+        </p>
+        <p data-reveal>Sabemos que os pais se preocupam com a primeira ida ao dentista. Por isso, cada detalhe foi pensado para ser uma experiência positiva, construindo memórias felizes.</p>
+        <div data-reveal style="margin-top:28px">
+          <a class="btn" href={wa(UNITS[0].whatsapp, 'Olá! Vim pelo site e gostaria de agendar uma consulta para meu filho(a) com a Dra. Thuelen.')} target="_blank" rel="noopener" data-pick data-msg="Olá! Vim pelo site e gostaria de agendar uma consulta para meu filho(a) com a Dra. Thuelen." data-magnetic>
+            <Icon name="kid" />Agendar para meu filho
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FERRAMENTA ================= -->
+  <section class="sec tool on-dark" id="avaliacao" aria-labelledby="tool-t">
+    <div class="wrap">
+      <div class="sec__head sec__head--center">
+        <span class="kicker" data-reveal>Em 30 segundos</span>
+        <Split as="h2" class="h2" id="tool-t" text="Monte sua *primeira avaliação*" />
+        <p class="lead" data-reveal>Conte o que você sente e onde prefere ser atendido. A gente monta a mensagem e você envia direto para a unidade escolhida.</p>
+      </div>
+
+      <div class="planner" data-planner data-reveal="scale">
+        <div class="planner__bar" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
+        <div class="planner__step is-on" data-pstep="0">
+          <p class="planner__q">O que você gostaria de resolver?</p>
+          <p class="planner__hint">Pode marcar mais de uma opção.</p>
+          <div class="opts opts--4">
+            {NEEDS.map((n) => (
+              <button type="button" class="opt" aria-pressed="false" data-need={n.id}>
+                <span class="ico"><Icon name={n.icon} /></span>
+                <span>{n.label}<small>{n.sub}</small></span>
+                <span class="chk"><Icon name="check" /></span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="planner__step" data-pstep="1">
+          <p class="planner__q">Para quando você precisa?</p>
+          <p class="planner__hint">Isso ajuda a equipe a encontrar o melhor horário.</p>
+          <div class="opts">
+            {WHEN.map((w) => (
+              <button type="button" class="opt" aria-pressed="false" data-when={w.id}>
+                <span class="ico"><Icon name={w.id === 'urgente' ? 'bolt' : w.id === 'semanas' ? 'calendar' : 'search'} /></span>
+                <span>{w.label}<small>{w.sub}</small></span>
+                <span class="chk"><Icon name="check" /></span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="planner__step" data-pstep="2">
+          <p class="planner__q">Qual unidade fica melhor?</p>
+          <p class="planner__hint">As duas ficam em Brusque.</p>
+          <div class="opts">
+            {UNITS.map((u) => (
+              <button type="button" class="opt" aria-pressed="false" data-unit={u.id}>
+                <span class="ico"><Icon name="pin" /></span>
+                <span>{u.name}<small>{u.street} – {u.district}</small></span>
+                <span class="chk"><Icon name="check" /></span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div class="planner__step" data-pstep="3">
+          <p class="planner__q">Pronto! Confira sua mensagem</p>
+          <p class="planner__hint">Se quiser, coloque seu nome para a equipe já te chamar por ele.</p>
+          <label class="sr-only" for="pl-name">Seu nome</label>
+          <input id="pl-name" type="text" autocomplete="given-name" placeholder="Seu nome (opcional)" data-pname />
+          <div class="summary">
+            <div class="summary__card">
+              <p class="summary__h">Tratamentos para conversar na avaliação</p>
+              <ul data-psum></ul>
+            </div>
+            <div>
+              <div class="bubble__head"><Icon name="wa" />Mensagem para a <b data-punit style="color:#fff;font-weight:600"></b></div>
+              <div class="bubble" data-pmsg></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="planner__nav">
+          <button type="button" class="planner__back" data-pback hidden>← Voltar</button>
+          <button type="button" class="btn btn--blush" data-pnext disabled>Continuar <Icon name="arrow" class="arrow" /></button>
+          <a class="btn btn--blush" href={DEFAULT_WA} target="_blank" rel="noopener" data-psend hidden><Icon name="wa" />Enviar no WhatsApp</a>
+        </div>
+        <script type="application/json" data-pdata set:html={JSON.stringify(plannerData)} />
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= DEPOIMENTOS ================= -->
+  <section class="sec reviews" aria-labelledby="rev-t">
+    <div class="wrap">
+      <div class="sec__head">
+        <span class="kicker" data-reveal>Depoimentos</span>
+        <Split as="h2" class="h2" id="rev-t" text="O que dizem os *pacientes* da Dra. Thuelen?" />
+      </div>
+      <div data-quotes>
+        <div class="quote-stage" aria-live="polite">
+          {REVIEWS.map((r, i) => (
+            <blockquote class:list={['quote', i === 0 && 'is-on']} data-q={i}>
+              <Icon name="quote" class="quote__mark" />
+              <p>{r.text}</p>
+              <footer><i>{r.name.split(' ').map((p) => p[0]).slice(0, 2).join('')}</i><span><b>{r.name}</b><small>Paciente</small></span></footer>
+            </blockquote>
+          ))}
+        </div>
+        <div class="quote-nav">
+          <button class="round" type="button" aria-label="Depoimento anterior" data-qprev><Icon name="left" /></button>
+          <div class="quote-nav__bars">
+            {REVIEWS.map((r, i) => <button type="button" class={i === 0 ? 'is-on' : ''} aria-label={`Ver depoimento de ${r.name}`} data-qdot={i}></button>)}
+          </div>
+          <button class="round" type="button" aria-label="Próximo depoimento" data-qnext><Icon name="arrow" /></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FAQ ================= -->
+  <section class="sec faq" id="duvidas" aria-labelledby="faq-t">
+    <div class="wrap faq__grid">
+      <div>
+        <span class="kicker" data-reveal>Tire suas dúvidas</span>
+        <Split as="h2" class="h2" id="faq-t" text="Perguntas frequentes sobre o *Centro Dra. Thuelen*" />
+        <p class="lead" data-reveal style="margin-top:18px">Não encontrou sua dúvida? Mande uma mensagem: a equipe responde pelo WhatsApp.</p>
+        <div data-reveal style="margin-top:22px"><a class="btn btn--ghost" style="color:var(--teal)" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" />Perguntar no WhatsApp</a></div>
+      </div>
+      <div class="acc">
+        {FAQ.map((f, i) => (
+          <details open={i === 0} data-reveal style={`--d:${i * 0.05}s`}>
+            <summary><h3 style="font:inherit;margin:0">{f.q}</h3><i aria-hidden="true"></i></summary>
+            <p class="acc__a">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= UNIDADES ================= -->
+  <section class="sec units on-dark" id="unidades" aria-labelledby="uni-t">
+    <div class="wrap">
+      <div class="sec__head">
+        <span class="kicker" data-reveal>Localização</span>
+        <Split as="h2" class="h2" id="uni-t" text="Onde fica o *dentista* em Brusque?" />
+        <p class="answer" data-reveal>
+          O Centro Dra. Thuelen tem duas unidades em Brusque - SC: a Unidade Centro, na R. Rodrigues Alves, 249 (Centro 1), e a
+          Unidade Paquetá, na R. Padre Antônio Eising, 262. As duas recebem pacientes de Brusque e região com o mesmo padrão de cuidado.
+        </p>
+      </div>
+      <div data-units>
+        <div class="units__tabs" role="tablist" aria-label="Unidades">
+          <span class="units__pill" aria-hidden="true"></span>
+          {UNITS.map((u, i) => (
+            <button type="button" role="tab" id={`tab-${u.id}`} aria-controls={`panel-${u.id}`} aria-selected={i === 0 ? 'true' : 'false'} data-utab={i}>{u.name}</button>
+          ))}
+        </div>
+        {UNITS.map((u, i) => (
+          <div class:list={['unit', i === 0 && 'is-on']} role="tabpanel" id={`panel-${u.id}`} aria-labelledby={`tab-${u.id}`} data-upanel={i}>
+            <div class="unit__info">
+              <h3>{u.name}</h3>
+              <div class="unit__row"><Icon name="pin" /><span>{u.street} – {u.district}<small>Brusque - SC{u.postalCode ? `, ${u.postalCode}` : ''}</small></span></div>
+              <div class="unit__row"><Icon name="wa" /><span>WhatsApp {u.phoneLabel}<small>Agendamento e dúvidas</small></span></div>
+              <div class="unit__row"><Icon name="shield" /><span>Atendimento particular<small>Recibos e laudos para reembolso do plano</small></span></div>
+              <div class="unit__btns">
+                <a class="btn" href={wa(u.whatsapp, `Olá! Vim pelo site e gostaria de agendar uma avaliação na ${u.name}.`)} target="_blank" rel="noopener"><Icon name="wa" />Agendar nesta unidade</a>
+                <a class="btn btn--ghost" style="color:var(--teal)" href={u.mapsUrl} target="_blank" rel="noopener">Como chegar <Icon name="arrow" class="arrow" /></a>
+              </div>
+            </div>
+            <div class="map" data-map={u.embedUrl}>
+              <div>
+                <span class="map__pin"><Icon name="pin" /></span>
+                <p style="margin:0 0 14px;font-family:var(--f-display);font-size:22px">{u.street}</p>
+                <button type="button" class="btn btn--blush" data-map-load>Ver no mapa</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CTA FINAL ================= -->
+  <section class="sec final" aria-labelledby="final-t">
+    <span class="final__ring" aria-hidden="true"></span><span class="final__ring" aria-hidden="true"></span><span class="final__ring" aria-hidden="true"></span>
+    <div class="wrap" style="position:relative">
+      <span class="kicker" data-reveal>O primeiro passo</span>
+      <Split as="h2" class="h2" id="final-t" text="Seu sorriso merece cuidado, *atenção e confiança.*" />
+      <p class="lead" data-reveal>Não deixe para depois. Dê o primeiro passo para transformar não apenas o seu sorriso, mas a sua autoestima e qualidade de vida.</p>
+      <div class="final__ctas" data-reveal>
+        <a class="btn btn--ink" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick data-magnetic><Icon name="wa" />Agendar minha avaliação</a>
+        <a class="btn btn--ghost" style="color:var(--petrol-900)" href="#avaliacao">Montar avaliação</a>
+      </div>
+    </div>
+  </section>
+</Base>
