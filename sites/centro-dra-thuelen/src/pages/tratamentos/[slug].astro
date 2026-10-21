@@ -57,7 +57,7 @@ const schema = [
         </nav>
         <span class="kicker" style="margin-top:22px" data-reveal>{t.tag} · Brusque - SC</span>
         <Split as="h1" class="h1" text={`${t.title} *em Brusque*`} />
-        <p class="hero__lead" data-reveal style="--d:.4s">{t.seoDesc.split('. ')[0]}.</p>
+        <p class="hero__lead" data-reveal style="--d:.4s">{t.hook}</p>
         <div class="hero__ctas" data-reveal style="--d:.55s">
           <a class="btn btn--blush" href={wa(UNITS[0].whatsapp, msg)} target="_blank" rel="noopener" data-pick data-msg={msg} data-magnetic><Icon name="wa" />Agendar avaliação</a>
           <a class="btn btn--ghost" href="/#avaliacao">Montar avaliação</a>
@@ -74,11 +74,15 @@ const schema = [
       <article class="prose">
         <h2>{t.question}</h2>
         <p class="answer">{t.text}</p>
+        <h2>Esse tratamento é para você se…</h2>
+        <ul class="foryou">
+          {t.forYou.map((f) => <li><Icon name="check" />{f}</li>)}
+        </ul>
         <h2>Como é o tratamento com a Dra. Thuelen?</h2>
         <p>
-          Tudo começa por uma avaliação cuidadosa, em que a Dra. Thuelen ouve o que incomoda você, examina e tira suas dúvidas.
-          A partir dela, cada caso recebe um planejamento minucioso, explicado sem termos difíceis: você entende o que será feito
-          e o porquê de cada etapa.
+          Tudo começa por uma conversa: a Dra. Thuelen ouve o que te incomoda, examina com calma e tira suas dúvidas. Depois, o seu
+          caso recebe um planejamento minucioso, explicado sem termos difíceis, para você entender o que será feito e o porquê de
+          cada etapa.
         </p>
         <ol class="why__list" style="margin-top:10px">
           <li><h3>Avaliação e escuta</h3><p>Entender sua necessidade real antes de qualquer indicação.</p></li>

@@ -2,17 +2,30 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Split from '../components/Split.astro';
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import heroImg from '../assets/img/dra-thuelen-mellao-dentista-brusque.webp';
-import recepcao from '../assets/img/recepcao-centro-dra-thuelen-brusque.webp';
-import kids from '../assets/img/odontopediatria-brusque.webp';
+import draPB from '../assets/img/real/dra-thuelen-mellao-retrato-pb.jpg';
+import draRenda from '../assets/img/real/dra-thuelen-mellao-consultorio-brusque.jpg';
+import draEspelho from '../assets/img/real/dra-thuelen-mellao-clinica-brusque.jpg';
+import kings1 from '../assets/img/real/dra-thuelen-kings-college-dental-hospital-londres.jpg';
+import kings2 from '../assets/img/real/dra-thuelen-kings-college-london.jpg';
+import sdFoto from '../assets/img/real/fotografia-odontologica-planejamento-sorriso.jpg';
+import sdTablet from '../assets/img/real/planejamento-digital-sorriso-antes-depois-brusque.jpg';
+import sdEscala from '../assets/img/real/escolha-de-cor-lentes-facetas-brusque.jpg';
+import sdEspelho from '../assets/img/real/paciente-teste-sorriso-espelho-dra-thuelen.jpg';
+import recepcao from '../assets/img/real/recepcao-unidade-centro-dra-thuelen-brusque.jpg';
+import kidsDra from '../assets/img/real/dra-thuelen-odontopediatria-espaco-kids.jpg';
+import kidsBrinq from '../assets/img/real/brinquedoteca-odontopediatria-brusque.jpg';
+import kidsCastelo from '../assets/img/real/espaco-kids-castelo-dentista-infantil-brusque.jpg';
+import kidsSelfie from '../assets/img/real/odontopediatria-sem-medo-dra-thuelen.jpg';
+import kidsBebe from '../assets/img/real/atendimento-bebe-odontopediatria-brusque.jpg';
 import logo from '../assets/img/logo-dra-thuelen-mellao.png';
-import { BRAND, UNITS, TREATMENTS, CREDENTIALS, DIFFERENTIALS, REVIEWS, FAQ, DEFAULT_WA, wa } from '../data/site';
+import { BRAND, UNITS, TREATMENTS, CREDENTIALS, REVIEWS, FAQ, RESULTS, DEFAULT_WA, wa } from '../data/site';
 
 const site = Astro.site!.toString().replace(/\/$/, '');
-const title = 'Dentista em Brusque | Centro Dra. Thuelen Mellão';
+const title = 'Dentista em Brusque | Dra. Thuelen Mellão – Sorrisos Naturais';
 const description =
-  'Dentista em Brusque - SC com duas unidades (Centro e Paquetá). Lentes de contato, implantes, alinhadores, odontopediatria e sedação. Agende pelo WhatsApp.';
+  'Dentista em Brusque - SC: lentes de contato, alinhadores, implantes, odontopediatria e ortopedia dos maxilares com a Dra. Thuelen Mellão. Sorrisos naturais. Agende.';
 
 const schema = [
   {
@@ -23,6 +36,7 @@ const schema = [
     description,
     isPartOf: { '@id': `${site}/#site` },
     about: { '@id': `${site}/#organizacao` },
+    primaryImageOfPage: `${site}/og.jpg`,
     inLanguage: 'pt-BR',
   },
   {
@@ -49,9 +63,52 @@ const schema = [
   },
 ];
 
-const rotWords = ['sorriso', 'autoestima', 'bem-estar'];
+// ---------- Stories (estilo Instagram) ----------
+const img = async (src: ImageMetadata, width = 720) => (await getImage({ src, width, format: 'webp', quality: 78 })).src;
+const thumb = async (src: ImageMetadata) => (await getImage({ src, width: 144, height: 144, format: 'webp', fit: 'cover' })).src;
+const STORIES = [
+  {
+    id: 'resultados', label: 'Resultados', cover: RESULTS[1].img,
+    items: await Promise.all(RESULTS.map(async (r) => ({ type: 'img', src: await img(r.img), alt: r.alt, cap: r.quote }))),
+  },
+  {
+    id: 'smile', label: 'Smile Design', cover: sdTablet,
+    items: [
+      { type: 'img', src: await img(sdFoto), alt: 'Fotografia profissional do sorriso para o planejamento', cap: '1. Tudo começa com fotos profissionais do seu sorriso.' },
+      { type: 'img', src: await img(sdTablet), alt: 'Planejamento digital com simulação de antes e depois', cap: '2. O planejamento digital mostra o antes e o depois.' },
+      { type: 'img', src: await img(sdEscala), alt: 'Escala de cores para escolher o tom dos dentes', cap: '3. A cor é escolhida dente a dente, na escala.' },
+      { type: 'img', src: await img(sdEspelho), alt: 'Paciente avaliando o novo sorriso no espelho', cap: '4. E você aprova olhando no espelho.' },
+    ],
+  },
+  {
+    id: 'clinica', label: 'A clínica', cover: recepcao,
+    items: [
+      { type: 'video', src: '/video/tour-clinica-dra-thuelen-brusque.mp4', poster: '/video/tour-clinica-poster.jpg', alt: 'Tour pela Unidade Centro', cap: 'Unidade Centro · R. Rodrigues Alves, 249 · com estacionamento próprio' },
+      { type: 'img', src: await img(recepcao), alt: 'Recepção da Unidade Centro', cap: 'A recepção: pensada para você se sentir bem desde a chegada.' },
+    ],
+  },
+  {
+    id: 'kids', label: 'Kids', cover: kidsDra,
+    items: [
+      { type: 'img', src: await img(kidsDra), alt: 'Dra. Thuelen no espaço kids', cap: 'Por uma geração de crianças sem medo de dentista.' },
+      { type: 'img', src: await img(kidsBrinq), alt: 'Brinquedoteca da clínica', cap: 'Brinquedoteca para a espera virar brincadeira.' },
+      { type: 'img', src: await img(kidsCastelo), alt: 'Castelo do espaço kids', cap: 'Um espaço pensado para eles se sentirem seguros.' },
+      { type: 'img', src: await img(kidsBebe), alt: 'Atendimento de bebê', cap: 'Cada atendimento cheio de carinho, paciência e cuidado.' },
+    ],
+  },
+  {
+    id: 'londres', label: 'Londres', cover: kings2,
+    items: [
+      { type: 'img', src: await img(kings1), alt: 'Dra. Thuelen no King’s College Dental Hospital', cap: 'King’s College London: referência mundial em Odontologia.' },
+      { type: 'img', src: await img(kings2), alt: 'Dra. Thuelen em frente à School of Dental Surgery do King’s College', cap: 'Perto das pesquisas em crescimento craniofacial, para continuar evoluindo.' },
+    ],
+  },
+];
+const logoSmall = (await getImage({ src: logo, width: 96, format: 'webp' })).src;
+const storyThumbs = await Promise.all(STORIES.map((s) => thumb(s.cover)));
+const storiesData = STORIES.map(({ id, label, items }) => ({ id, label, items }));
 
-// Ferramenta: cada queixa aponta para tratamentos reais da clínica.
+// ---------- Ferramenta ----------
 const NEEDS = [
   { id: 'estetica', label: 'Mudar cor ou formato dos dentes', sub: 'Lentes, facetas', icon: 'sparkle', t: ['lentes-de-contato-dental', 'facetas-esteticas'] },
   { id: 'alinhar', label: 'Alinhar os dentes', sub: 'Alinhadores, aparelhos', icon: 'align', t: ['alinhadores-invisiveis', 'aparelhos-ortodonticos'] },
@@ -59,7 +116,7 @@ const NEEDS = [
   { id: 'dor', label: 'Dor ou sensibilidade', sub: 'Canal, avaliação', icon: 'bolt', t: ['tratamento-de-canal'] },
   { id: 'limpeza', label: 'Limpeza e check-up', sub: 'Prevenção', icon: 'drop', t: ['limpeza-e-prevencao'] },
   { id: 'sono', label: 'Ronco, bruxismo ou dor ao acordar', sub: 'Placas e aparelhos', icon: 'moon', t: ['ronco-e-bruxismo'] },
-  { id: 'filho', label: 'Consulta para meu filho', sub: 'Atendimento lúdico', icon: 'kid', t: [] },
+  { id: 'filho', label: 'Consulta ou mordida do meu filho', sub: 'Kids, ortopedia', icon: 'kid', t: ['ortopedia-funcional-dos-maxilares'] },
   { id: 'medo', label: 'Tenho medo de dentista', sub: 'Sedação e laser', icon: 'heart', t: [] },
 ];
 const WHEN = [
@@ -73,64 +130,70 @@ const plannerData = {
   units: UNITS.map(({ id, name, whatsapp, street }) => ({ id, name, whatsapp, street })),
   treatments: Object.fromEntries(TREATMENTS.map((t) => [t.slug, t.title])),
 };
+
+const manifesto = 'E talvez o maior luxo seja esse: olhar para o seu sorriso e não enxergar um trabalho odontológico. Enxergar você, só que melhor.';
+const ORTO_SIGNS = [
+  'Os dentes estão nascendo amontoados, sem espaço',
+  'Ao morder, os dentes de baixo ficam à frente dos de cima',
+  'Você já ouviu “vamos esperar crescer”',
+];
 ---
 <Base title={title} description={description} schema={schema}>
+  <!-- ================= SPLASH ================= -->
+  <script is:inline>try{if(sessionStorage.getItem('tm-splash'))document.documentElement.classList.add('no-splash');else sessionStorage.setItem('tm-splash','1')}catch(e){document.documentElement.classList.add('no-splash')}</script>
+  <div class="splash" aria-hidden="true">
+    <svg class="splash__mono" viewBox="0 0 120 100" fill="none">
+      <path pathLength="1" d="M8 12h104" />
+      <path pathLength="1" d="M60 12v80" />
+      <path pathLength="1" d="M34 12c0 22 10 34 26 40" />
+      <path pathLength="1" d="M86 12c0 22-10 34-26 40" />
+      <path pathLength="1" d="M44 92h32" />
+    </svg>
+    <span class="splash__name">Dra. Thuelen Mellão</span>
+  </div>
+
   <!-- ================= HERO ================= -->
-  <section class="hero on-dark" data-anim aria-labelledby="h1">
+  <section class="hero2 on-dark" data-anim aria-labelledby="h1">
+    <div class="hero2__media">
+      <Picture
+        src={heroImg}
+        formats={['webp']}
+        fallbackFormat="webp"
+        quality={72}
+        widths={[420, 640, 768]}
+        sizes="(min-width: 960px) 520px, 100vw"
+        alt="Dra. Thuelen Mellão, cirurgiã-dentista, sorrindo em seu consultório em Brusque"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <span class="hero2__scan" aria-hidden="true"></span>
+      <span class="hero2__tag"><b>{BRAND.doctor}</b><small>{BRAND.role} · {BRAND.cro}</small></span>
+    </div>
     <div class="hero__aurora" aria-hidden="true"></div>
-    <div class="wrap hero__grid">
-      <div class="hero__copy">
-        <span class="hero__eyebrow intro"><i></i><span><span class="hide-sm">Consultório odontológico em </span>Brusque - SC · {BRAND.cro}</span></span>
-        <h1 class="h1" id="h1">
-          <span class="split split--intro" style="--d:.1s">
-            <span class="w"><span style="--i:0">Dentista</span></span> <span class="w"><span style="--i:1">em</span></span> <span class="w"><span style="--i:2">Brusque</span></span>
-            <span class="w"><span style="--i:3">que</span></span> <span class="w"><span style="--i:4">cuida</span></span> <span class="w"><span style="--i:5">do</span></span> <span class="w"><span style="--i:6">seu</span></span>
-          </span>
-          <span class="rot" data-rot aria-hidden="true">
-            {rotWords.map((w, i) => <span class={i === 0 ? 'is-on' : ''}>{w}.</span>)}
-          </span>
-          <span class="sr-only">sorriso, autoestima e bem-estar.</span>
-        </h1>
-        <p class="hero__lead intro" style="--d:.5s">
-          Com a {BRAND.doctor}, ciência, tecnologia e cuidado humano caminham juntos<span class="hide-sm">: planejamento minucioso,
-          sedação para quem tem medo e duas unidades em Brusque para receber você e sua família</span>.
-        </p>
-        <div class="hero__ctas intro" style="--d:.65s">
-          <a class="btn btn--blush" href="#avaliacao" data-magnetic><Icon name="plan" />Monte sua avaliação</a>
-          <a class="btn btn--ghost" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" /><span><span class="hide-sm">Falar no </span>WhatsApp</span></a>
-        </div>
-        <ul class="hero__proof intro" style="--d:.8s">
-          <li><Icon name="cap" />Especialista em 4 áreas</li>
-          <li><Icon name="shield" />Sedação para crianças e adultos</li>
-          <li><Icon name="building" />Bloco cirúrgico próprio</li>
-        </ul>
+    <div class="wrap hero2__copy">
+      <h1 class="h1" id="h1">
+        <span class="hero2__kicker intro">Dentista em Brusque<span class="sr-only">:</span></span>
+        <span class="split split--intro" style="--d:.15s">
+          <span class="w"><span style="--i:0">Um</span></span> <span class="w"><span style="--i:1">sorriso</span></span> <span class="w"><span style="--i:2">que</span></span> <span class="w"><span style="--i:3">é</span></span> <em><span class="w"><span style="--i:4">você.</span></span></em>
+          <span class="w"><span style="--i:5">Só</span></span> <span class="w"><span style="--i:6">que</span></span> <span class="w"><span style="--i:7">melhor.</span></span>
+        </span>
+      </h1>
+      <p class="hero__lead intro" style="--d:.55s">
+        A {BRAND.doctor} planeja cada sorriso para combinar com o seu rosto: natural, seguro e sem aquela cara de “dente feito”.
+      </p>
+      <div class="hero__ctas intro" style="--d:.7s">
+        <a class="btn btn--blush" href="#avaliacao" data-magnetic><Icon name="plan" />Montar avaliação</a>
+        <a class="btn btn--ghost" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" /><span>WhatsApp</span></a>
       </div>
 
-      <div class="hero__visual" data-tilt>
-        <svg class="orbit" viewBox="0 0 200 200" aria-hidden="true">
-          <defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs>
-          <text><textPath href="#circ">Dra. Thuelen Mellão • Cirurgiã-Dentista • {BRAND.cro} •</textPath></text>
-        </svg>
-        <span class="orbit__core" aria-hidden="true"><Icon name="tooth" /></span>
-        <div class="arch">
-          <Picture
-            src={heroImg}
-            formats={['avif']} fallbackFormat="webp"
-            widths={[380, 560, 768]}
-            sizes="(min-width: 900px) 520px, 90vw"
-            alt="Dra. Thuelen Mellão, cirurgiã-dentista, em seu consultório em Brusque"
-            loading="eager"
-            fetchpriority="high"
-          />
-          <div class="arch__grid" aria-hidden="true"></div>
-        </div>
-        <span class="chip chip--a"><Icon name="laser" />Laser de alta e baixa potência</span>
-        <span class="chip chip--b"><Icon name="scan" />Escaneamento digital 3D</span>
-        <div class="tag">
-          <b>{BRAND.doctor}</b>
-          <small>{BRAND.role} · {BRAND.cro}</small>
-        </div>
-      </div>
+      <ul class="stories intro" style="--d:.85s" aria-label="Destaques">
+        {STORIES.map((s, i) => (
+          <li><button type="button" class="story" data-story={i} aria-label={`Ver destaque ${s.label}`}>
+            <span class="story__ring"><img src={storyThumbs[i]} width="72" height="72" alt="" loading="eager" decoding="async" /></span>
+            <span class="story__label">{s.label}</span>
+          </button></li>
+        ))}
+      </ul>
     </div>
     <svg class="hero__wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0 90V40C240 0 480 0 720 30s480 60 720 10v50Z" fill="currentColor" /></svg>
   </section>
@@ -138,101 +201,125 @@ const plannerData = {
   <div class="marquee" aria-hidden="true" data-anim>
     <div class="marquee__track">
       {[0, 1].map(() => (
-        <Fragment>{TREATMENTS.map((t) => <span>{t.title}</span>)}<span>Odontopediatria</span></Fragment>
+        <Fragment>{TREATMENTS.map((t) => <span>{t.title}</span>)}<span>Odontopediatria</span><span>Smile Design</span></Fragment>
       ))}
     </div>
   </div>
 
-  <!-- ================= SOBRE ================= -->
-  <section class="sec about" id="sobre" aria-labelledby="sobre-t">
-    <div class="wrap">
-      <div class="about__grid">
-        <div class="about__years" data-reveal>
-          <span class="about__num"><span data-count="10">10</span><sup>+</sup></span>
-          <strong>Anos dedicados à saúde</strong>
-          <p>Transformando sorrisos e vidas de crianças e adultos em Brusque.</p>
-        </div>
-
-        <figure class="about__photo" data-reveal="mask">
-          <Picture src={recepcao} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 960px) 360px, 92vw" alt="Recepção do Centro Dra. Thuelen em Brusque, com a marca Thuelen Mellão na parede" loading="lazy" />
-          <figcaption><Icon name="building" />Ambiente planejado para você se sentir em casa</figcaption>
-        </figure>
-
-        <div class="about__text">
-          <span class="kicker" data-reveal>Quem é a Dra. Thuelen</span>
-          <Split as="h2" class="h2" id="sobre-t" text="Quem é a *Dra. Thuelen Mellão?*" />
-          <p class="answer" data-reveal>
-            A Dra. Thuelen Mellão é cirurgiã-dentista ({BRAND.cro}) e responsável técnica pelo Centro Dra. Thuelen, em Brusque - SC.
-            Especialista em quatro áreas, mestranda e MBA, é pesquisadora, gestora e empresária, e atende crianças e adultos em duas
-            unidades com bloco cirúrgico próprio.
-          </p>
-          <blockquote data-reveal>
-            “Desde sempre, sou fascinada pelo corpo humano. Ele é uma máquina perfeita… e o sorriso é a porta de entrada.”
-          </blockquote>
-          <p data-reveal>
-            Com mais de 10 anos de dedicação à área da saúde, ela encontrou na odontologia a sua verdadeira paixão. Acredita que
-            cada sorriso tem uma história, e o seu propósito é ajudar crianças e adultos a descobrirem sua melhor versão, com
-            autoestima, bem-estar e qualidade de vida.
-          </p>
-          <div class="about__sign" data-reveal>
-            <img src={logo.src} width="52" height="52" alt="" loading="lazy" decoding="async" />
-            <span><b>{BRAND.doctor}</b><small>Responsável Técnica · {BRAND.cro}</small></span>
-          </div>
+  <!-- ================= MANIFESTO ================= -->
+  <section class="sec manifesto" aria-labelledby="mani-t">
+    <div class="wrap manifesto__grid">
+      <div>
+        <h2 class="kicker" id="mani-t" data-reveal>O que é um sorriso de luxo?</h2>
+        <p class="manifesto__text" data-words>
+          {manifesto.split(' ').map((w, i) => <span style={`--k:${i}`}>{w} </span>)}
+        </p>
+        <div class="manifesto__sign" data-reveal>
+          <img src={logoSmall} width="44" height="44" alt="" loading="lazy" decoding="async" />
+          <span><b>{BRAND.doctor}</b><small>Cirurgiã-dentista em Brusque</small></span>
         </div>
       </div>
+      <figure class="manifesto__photo" data-reveal="mask">
+        <Picture src={draPB} formats={['avif']} fallbackFormat="webp" widths={[360, 540]} sizes="(min-width: 960px) 420px, 80vw" alt="Retrato em preto e branco da Dra. Thuelen Mellão sorrindo" loading="lazy" />
+      </figure>
     </div>
   </section>
 
-  <!-- ================= JORNADA ================= -->
-  <section class="sec journey" aria-labelledby="jornada-t">
-    <div class="wrap">
-      <div class="sec__head sec__head--center">
-        <span class="kicker" data-reveal>Do primeiro contato ao pós-tratamento</span>
-        <Split as="h2" class="h2" id="jornada-t" text="Como é o seu *tratamento* na clínica?" />
-        <p class="lead" data-reveal>Tudo começa ouvindo você. Depois vem um plano claro, um tratamento confortável e acompanhamento de perto.</p>
-      </div>
-      <ol class="steps" data-steps>
-        <span class="steps__line" aria-hidden="true"><i></i></span>
-        <li class="step" data-reveal style="--d:0s">
-          <span class="step__ico"><Icon name="ear" /></span>
-          <div><h3>Escuta e avaliação</h3><p>A primeira consulta é o momento de ouvir você e entender sua necessidade real.</p></div>
-        </li>
-        <li class="step" data-reveal style="--d:.1s">
-          <span class="step__ico"><Icon name="scan" /></span>
-          <div><h3>Planejamento minucioso</h3><p>Cada caso é planejado em detalhe, com explicações claras e sem termos difíceis.</p></div>
-        </li>
-        <li class="step" data-reveal style="--d:.2s">
-          <span class="step__ico"><Icon name="laser" /></span>
-          <div><h3>Tratamento com conforto</h3><p>Sedação para crianças e adultos e laser de alta e baixa potência quando indicado.</p></div>
-        </li>
-        <li class="step" data-reveal style="--d:.3s">
-          <span class="step__ico"><Icon name="heart" /></span>
-          <div><h3>Acompanhamento próximo</h3><p>A equipe fica ao seu lado antes, durante e depois, para garantir o resultado.</p></div>
-        </li>
-      </ol>
-    </div>
-  </section>
-
-  <!-- ================= CREDENCIAIS ================= -->
-  <section class="sec creds on-dark" aria-labelledby="cred-t">
-    <svg class="creds__mono" viewBox="0 0 200 160" fill="none" aria-hidden="true">
-      <path pathLength="1" d="M10 20h180M100 20v130M60 20c0 30 15 50 40 60M140 20c0 30-15 50-40 60M70 150h60" stroke="currentColor" stroke-width="3" stroke-linecap="round" />
-    </svg>
+  <!-- ================= RESULTADOS ================= -->
+  <section class="sec results on-dark" id="resultados" aria-labelledby="res-t">
     <div class="wrap">
       <div class="sec__head">
-        <span class="kicker" data-reveal>Formação e estrutura</span>
-        <Split as="h2" class="h2" id="cred-t" text="Por que a formação da Dra. Thuelen *faz diferença?*" />
-        <p class="lead" data-reveal>Estudo constante, tecnologia e estrutura própria. É assim que ela entrega segurança em cada etapa.</p>
+        <span class="kicker" data-reveal>Resultados reais</span>
+        <Split as="h2" class="h2" id="res-t" text="Sorrisos que não parecem feitos. *Parecem seus.*" />
+        <p class="answer" data-reveal>
+          Pacientes reais do Centro Dra. Thuelen, retratados na campanha “Luxo é…” da clínica. O objetivo de cada tratamento é o mesmo:
+          um resultado que complementa o rosto, respeita os lábios e preserva o máximo possível do dente natural.
+        </p>
       </div>
-      <div class="bento">
-        {CREDENTIALS.map((c, i) => (
-          <article class:list={['bento__item', i === 0 && 'bento__item--hero']} data-reveal="scale" data-spot style={`--d:${i * 0.08}s`}>
-            <Icon name={['cap', 'shield', 'laser', 'building'][i]} class="bento__ico" />
-            <span class="bento__k">{c.kicker}</span>
-            <h3>{c.title}</h3>
-            <p>{c.text}</p>
-          </article>
+      <div class="rgal" data-rgal>
+        {RESULTS.map((r, i) => (
+          <figure class="rcard" data-reveal style={`--d:${i * 0.08}s`}>
+            <Picture src={r.img} formats={['avif']} fallbackFormat="webp" widths={[320, 480, 640]} sizes="(min-width: 1000px) 280px, 78vw" alt={r.alt} loading="lazy" />
+            <figcaption>{r.quote}</figcaption>
+          </figure>
         ))}
+        <a class="rcard rcard--cta" href="#avaliacao" data-reveal style="--d:.32s">
+          <span class="rcard__plus">+</span>
+          <b>O próximo sorriso pode ser o seu.</b>
+          <span>Monte sua avaliação em 30 segundos <Icon name="arrow" class="arrow" /></span>
+        </a>
+      </div>
+      <div class="rgal__hint" aria-hidden="true"><Icon name="left" /> arraste <Icon name="arrow" /></div>
+    </div>
+  </section>
+
+  <!-- ================= SOBRE ================= -->
+  <section class="sec about2" id="sobre" aria-labelledby="sobre-t">
+    <div class="wrap about2__grid">
+      <div class="about2__media">
+        <figure class="about2__main" data-reveal="mask">
+          <Picture src={draRenda} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 960px) 460px, 86vw" alt="Dra. Thuelen Mellão sorrindo no consultório, com uma xícara com a inicial T" loading="lazy" />
+        </figure>
+        <figure class="about2__polaroid" data-reveal="scale" style="--d:.2s">
+          <Picture src={kings2} formats={['avif']} fallbackFormat="webp" widths={[240, 360]} sizes="200px" alt="Dra. Thuelen em frente à School of Dental Surgery do King’s College Hospital, em Londres" loading="lazy" />
+          <figcaption>King’s College London</figcaption>
+        </figure>
+      </div>
+      <div class="about2__text">
+        <span class="kicker" data-reveal>A doutora</span>
+        <Split as="h2" class="h2" id="sobre-t" text="Quem é a *Dra. Thuelen Mellão?*" />
+        <p class="answer" data-reveal>
+          A Dra. Thuelen Mellão é cirurgiã-dentista ({BRAND.cro}) e responsável técnica pelo Centro Dra. Thuelen, em Brusque - SC.
+          Especialista em quatro áreas, mestranda e MBA, é pesquisadora, gestora e empresária, e atende adultos e crianças em duas
+          unidades com bloco cirúrgico próprio.
+        </p>
+        <blockquote data-reveal>“Tenho a sorte de trabalhar todos os dias criando sorrisos que contam histórias.”</blockquote>
+        <p data-reveal>
+          Desde sempre fascinada pelo corpo humano, “uma máquina perfeita, e o sorriso é a porta de entrada”, ela encontrou na
+          odontologia a sua verdadeira paixão. E não para de estudar: esteve no <strong>King’s College London</strong>, referência
+          mundial em Odontologia e sede do Centre for Craniofacial &amp; Regenerative Biology, perto das pesquisas sobre crescimento
+          e desenvolvimento craniofacial que tanto a encantam.
+        </p>
+        <ul class="stats" data-reveal>
+          {CREDENTIALS.map((c) => (
+            <li><b><span data-count={c.k.replace(/\D/g, '')}>{c.k.replace(/\D/g, '')}</span>{c.k.includes('+') ? '+' : ''}</b><span>{c.label}</span></li>
+          ))}
+        </ul>
+        <ul class="pills" data-reveal>
+          <li><Icon name="shield" />Sedação para crianças e adultos</li>
+          <li><Icon name="laser" />Laser de alta e baixa potência</li>
+          <li><Icon name="building" />Bloco cirúrgico próprio</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SMILE DESIGN ================= -->
+  <section class="sec sd" aria-labelledby="sd-t">
+    <div class="wrap">
+      <div class="sec__head sec__head--center">
+        <span class="kicker" data-reveal>Smile Design</span>
+        <Split as="h2" class="h2" id="sd-t" text="Como o seu novo sorriso *é planejado?*" />
+        <p class="answer" data-reveal style="margin-inline:auto">
+          Antes de qualquer procedimento, o seu sorriso é estudado: fotografias profissionais, planejamento digital com simulação de
+          antes e depois, escolha da cor na escala e o teste no espelho, com você acompanhando cada decisão.
+        </p>
+      </div>
+      <div class="sd__grid">
+        <figure class="sd__img sd__img--a" data-reveal="mask">
+          <Picture src={sdFoto} formats={['avif']} fallbackFormat="webp" widths={[360, 540]} sizes="(min-width: 960px) 380px, 70vw" alt="Dra. Thuelen fotografando o sorriso da paciente com câmera profissional" loading="lazy" />
+        </figure>
+        <ol class="sd__steps" data-steps>
+          <span class="steps__line" aria-hidden="true"><i></i></span>
+          <li data-reveal><b>01</b><div><h3>Fotos e escuta</h3><p>Fotografias profissionais e uma conversa sobre o que te incomoda e o que você sonha.</p></div></li>
+          <li data-reveal style="--d:.08s"><b>02</b><div><h3>Planejamento digital</h3><p>O sorriso é desenhado no digital, com simulação de antes e depois.</p></div></li>
+          <li data-reveal style="--d:.16s"><b>03</b><div><h3>A cor certa</h3><p>O tom é escolhido na escala de cores, para combinar com a sua pele e o seu rosto.</p></div></li>
+          <li data-reveal style="--d:.24s"><b>04</b><div><h3>Você aprova</h3><p>O resultado é testado e você vê no espelho antes de seguir.</p></div></li>
+        </ol>
+        <figure class="sd__img sd__img--b" data-reveal="mask" style="--d:.15s">
+          <Picture src={sdTablet} formats={['avif']} fallbackFormat="webp" widths={[360, 540]} sizes="(min-width: 960px) 380px, 70vw" alt="Planejamento digital do sorriso no tablet comparando antes e depois" loading="lazy" />
+          <figcaption>Antes e depois, no planejamento digital</figcaption>
+        </figure>
       </div>
     </div>
   </section>
@@ -241,12 +328,11 @@ const plannerData = {
   <section class="sec treat" id="tratamentos" aria-labelledby="trat-t">
     <div class="wrap">
       <div class="sec__head">
-        <span class="kicker" data-reveal>Especialidades</span>
-        <Split as="h2" class="h2" id="trat-t" text="Quais tratamentos a Dra. Thuelen faz *em Brusque?*" />
+        <span class="kicker" data-reveal>Tratamentos</span>
+        <Split as="h2" class="h2" id="trat-t" text="O que você quer *mudar no seu sorriso?*" />
         <p class="answer" data-reveal>
-          No Centro Dra. Thuelen você encontra lentes de contato dental, facetas estéticas, alinhadores invisíveis, implantes,
-          aparelhos ortodônticos, limpeza e prevenção, tratamento de canal e tratamento de ronco e bruxismo, além de odontopediatria,
-          nas unidades Centro e Paquetá.
+          Lentes de contato, facetas, alinhadores invisíveis, ortopedia funcional dos maxilares, implantes, aparelhos, limpeza,
+          canal e tratamento de ronco e bruxismo, nas unidades Centro e Paquetá, em Brusque.
         </p>
       </div>
 
@@ -267,17 +353,18 @@ const plannerData = {
           {TREATMENTS.map((t, i) => (
             <article class="chapter" data-ch={i} data-reveal>
               <div class="chapter__img">
-                <Picture src={t.img} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 1000px) 1px, 92vw" alt={t.alt} loading="lazy" />
+                <Picture src={t.img} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 1000px) 1px, 86vw" alt={t.alt} loading="lazy" />
               </div>
               <div class="chapter__body">
                 <div class="chapter__meta"><b>{String(i + 1).padStart(2, '0')}</b>{t.tag}</div>
                 <h3>{t.title}</h3>
+                <p class="chapter__hook">{t.hook}</p>
                 <p>{t.text}</p>
                 <div class="chapter__actions">
                   <a class="btn" href={wa(UNITS[0].whatsapp, `Olá! Vim pelo site e quero saber mais sobre ${t.title} com a Dra. Thuelen.`)} target="_blank" rel="noopener" data-pick data-msg={`Olá! Vim pelo site e quero saber mais sobre ${t.title} com a Dra. Thuelen.`}>
                     <Icon name="wa" />Quero avaliar
                   </a>
-                  <a class="link-arrow" href={`/tratamentos/${t.slug}/`}>Entender o tratamento <Icon name="arrow" class="arrow" /></a>
+                  <a class="link-arrow" href={`/tratamentos/${t.slug}/`}>Ver detalhes <Icon name="arrow" class="arrow" /></a>
                 </div>
               </div>
             </article>
@@ -288,48 +375,86 @@ const plannerData = {
     </div>
   </section>
 
-  <!-- ================= DIFERENCIAIS ================= -->
-  <section class="sec why" aria-labelledby="why-t">
-    <div class="wrap why__grid">
-      <div class="why__aside">
-        <span class="kicker" data-reveal>Por que nos escolher</span>
-        <Split as="h2" class="h2" id="why-t" text="Por que tantas famílias escolhem o *Centro Dra. Thuelen?*" />
-        <p class="lead" data-reveal>Odontologia de qualidade vai além da técnica. É sobre cuidado, escuta e dedicação para entregar os melhores resultados com tranquilidade.</p>
-        <div data-reveal><a class="btn btn--ink" href="#avaliacao" data-magnetic>Quero ser atendido assim <Icon name="arrow" class="arrow" /></a></div>
-      </div>
-      <ol class="why__list">
-        {DIFFERENTIALS.map((d, i) => (
-          <li data-reveal style={`--d:${i * 0.06}s`}><h3>{d.title}</h3><p>{d.text}</p></li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <!-- ================= INFANTIL ================= -->
-  <section class="sec kids" data-anim id="infantil" aria-labelledby="kids-t">
-    <div class="wrap kids__grid">
-      <div class="kids__photo" data-reveal="scale">
+  <!-- ================= INFANTIL + ORTOPEDIA ================= -->
+  <section class="sec kids2" id="infantil" data-anim aria-labelledby="kids-t">
+    <div class="wrap kids2__grid">
+      <div class="kids2__collage">
+        <figure class="kids2__a" data-reveal="scale">
+          <Picture src={kidsDra} formats={['avif']} fallbackFormat="webp" widths={[320, 480]} sizes="(min-width: 960px) 300px, 52vw" alt="Dra. Thuelen brincando no espaço kids da clínica, com Mickey e Minnie ao fundo" loading="lazy" />
+        </figure>
+        <figure class="kids2__b" data-reveal="scale" style="--d:.12s">
+          <Picture src={kidsSelfie} formats={['avif']} fallbackFormat="webp" widths={[320, 480]} sizes="(min-width: 960px) 280px, 46vw" alt="Dra. Thuelen e paciente criança sorrindo juntos em uma selfie no consultório" loading="lazy" />
+        </figure>
+        <figure class="kids2__c" data-reveal="scale" style="--d:.24s">
+          <Picture src={kidsCastelo} formats={['avif']} fallbackFormat="webp" widths={[240, 360]} sizes="(min-width: 960px) 220px, 40vw" alt="Castelo e brinquedos do espaço kids do Centro Dra. Thuelen" loading="lazy" />
+        </figure>
         <span class="kids__float" aria-hidden="true">🧸</span>
         <span class="kids__float" aria-hidden="true">✨</span>
-        <span class="kids__float" aria-hidden="true">🎈</span>
-        <div class="kids__blob">
-          <Picture src={kids} formats={['avif']} fallbackFormat="webp" widths={[400, 600, 800]} sizes="(min-width: 960px) 520px, 92vw" alt="Dra. Thuelen abraçada a um paciente criança após a consulta" loading="lazy" />
-        </div>
-        <div class="kids__badge"><b>Sem trauma</b>Espaço lúdico e adaptado para os pequenos.</div>
       </div>
       <div>
-        <span class="kicker" data-reveal>Odontopediatria</span>
-        <Split as="h2" class="h2" id="kids-t" text="Como é o atendimento *infantil* na clínica?" />
+        <span class="kicker" data-reveal>Para o seu filho</span>
+        <Split as="h2" class="h2" id="kids-t" text="Como fazer seu filho *gostar de ir ao dentista?*" />
         <p class="answer" data-reveal style="margin-top:20px">
-          O atendimento infantil é pautado pela paciência e pela adaptação. A Dra. Thuelen usa uma abordagem lúdica e acolhedora,
-          com brincadeiras e uma linguagem que a criança entende, para que ela crie confiança com o dentista e cresça sem traumas.
+          “Muito além de cuidar de dentes, eu quero transformar a maneira como as crianças enxergam a Odontologia.” Na clínica, cada
+          detalhe, cada brincadeira e cada gesto de carinho têm um propósito: que os pequenos cresçam associando o dentista a boas
+          lembranças, e não ao medo.
         </p>
-        <p data-reveal>Sabemos que os pais se preocupam com a primeira ida ao dentista. Por isso, cada detalhe foi pensado para ser uma experiência positiva, construindo memórias felizes.</p>
-        <div data-reveal style="margin-top:28px">
+        <p data-reveal>Brinquedoteca, um castelo no espaço kids, recompensa pela coragem no final e sedação quando necessário.</p>
+        <div data-reveal style="margin-top:24px">
           <a class="btn" href={wa(UNITS[0].whatsapp, 'Olá! Vim pelo site e gostaria de agendar uma consulta para meu filho(a) com a Dra. Thuelen.')} target="_blank" rel="noopener" data-pick data-msg="Olá! Vim pelo site e gostaria de agendar uma consulta para meu filho(a) com a Dra. Thuelen." data-magnetic>
             <Icon name="kid" />Agendar para meu filho
           </a>
         </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <div class="orto" data-orto data-reveal="scale">
+        <div class="orto__head">
+          <span class="kicker">Ortopedia funcional dos maxilares</span>
+          <h3 class="orto__t">Os dentes do seu filho estão nascendo <em>amontoados?</em></h3>
+          <p>Isso não é só falta de espaço: pode ser sinal de que os maxilares não estão se desenvolvendo como deveriam. Na infância, o crescimento é um aliado, e existe uma janela de oportunidade que não devemos ignorar.</p>
+        </div>
+        <div class="orto__check">
+          <p class="orto__q">Marque o que você percebe:</p>
+          <ul>
+            {ORTO_SIGNS.map((s, i) => (
+              <li><button type="button" class="orto__opt" aria-pressed="false" data-sign={i}><span class="chk"><Icon name="check" /></span>{s}</button></li>
+            ))}
+          </ul>
+          <p class="orto__result" data-orto-result aria-live="polite">Toque nos sinais que você reconhece.</p>
+          <a class="btn btn--blush" href={wa(UNITS[0].whatsapp, 'Olá! Gostaria de agendar uma avaliação de ortopedia funcional dos maxilares para meu filho(a) com a Dra. Thuelen.')} target="_blank" rel="noopener" data-orto-send>
+            <Icon name="wa" />Avaliar a mordida do meu filho
+          </a>
+          <p class="orto__quote">“Não espere seu filho crescer para descobrir que o momento ideal de intervir já passou.” <span>— Dra. Thuelen</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= A CLÍNICA ================= -->
+  <section class="sec clinic on-dark" id="clinica" aria-labelledby="clin-t">
+    <div class="wrap clinic__grid">
+      <div class="clinic__phone" data-reveal="scale">
+        <video class="clinic__video" muted loop playsinline preload="none" poster="/video/tour-clinica-poster.jpg" width="540" height="960" data-lazyvideo aria-label="Tour em vídeo pela Unidade Centro do Centro Dra. Thuelen">
+          <source data-src="/video/tour-clinica-dra-thuelen-brusque.mp4" type="video/mp4" />
+        </video>
+        <span class="clinic__live"><i></i>Unidade Centro</span>
+      </div>
+      <div>
+        <span class="kicker" data-reveal>A clínica</span>
+        <Split as="h2" class="h2" id="clin-t" text="Como é o Centro Dra. Thuelen *por dentro?*" />
+        <p class="answer" data-reveal>
+          Cuidar do sorriso fica ainda melhor quando você se sente bem desde a chegada. A estrutura é completa e acolhedora, com
+          tecnologia de ponta e especialistas em diversas áreas para atender você com segurança, responsabilidade e muito carinho.
+        </p>
+        <ul class="clinic__facts">
+          <li data-reveal><Icon name="pin" /><span><b>Estacionamento próprio</b>na Unidade Centro, R. Rodrigues Alves, 249</span></li>
+          <li data-reveal style="--d:.06s"><Icon name="scan" /><span><b>Escaneamento digital 3D</b>a base dos alinhadores invisíveis e do planejamento</span></li>
+          <li data-reveal style="--d:.12s"><Icon name="building" /><span><b>Bloco cirúrgico próprio</b>implantes e cirurgias sem sair da clínica</span></li>
+          <li data-reveal style="--d:.18s"><Icon name="kid" /><span><b>Espaço kids</b>brinquedoteca e castelo para os pequenos</span></li>
+        </ul>
+        <div data-reveal><button type="button" class="btn btn--blush" data-story-open="2"><Icon name="arrow" />Ver o tour completo</button></div>
       </div>
     </div>
   </section>
@@ -340,7 +465,7 @@ const plannerData = {
       <div class="sec__head sec__head--center">
         <span class="kicker" data-reveal>Em 30 segundos</span>
         <Split as="h2" class="h2" id="tool-t" text="Monte sua *primeira avaliação*" />
-        <p class="lead" data-reveal>Conte o que você sente e onde prefere ser atendido. A gente monta a mensagem e você envia direto para a unidade escolhida.</p>
+        <p class="lead" data-reveal>Conte o que você sente e onde prefere ser atendido. A mensagem fica pronta e vai direto para o WhatsApp da unidade escolhida.</p>
       </div>
 
       <div class="planner" data-planner data-reveal="scale">
@@ -381,7 +506,7 @@ const plannerData = {
             {UNITS.map((u) => (
               <button type="button" class="opt" aria-pressed="false" data-unit={u.id}>
                 <span class="ico"><Icon name="pin" /></span>
-                <span>{u.name}<small>{u.street} – {u.district}</small></span>
+                <span>{u.name}<small>{u.street} · {u.perks[0]}</small></span>
                 <span class="chk"><Icon name="check" /></span>
               </button>
             ))}
@@ -395,7 +520,7 @@ const plannerData = {
           <input id="pl-name" type="text" autocomplete="given-name" placeholder="Seu nome (opcional)" data-pname />
           <div class="summary">
             <div class="summary__card">
-              <p class="summary__h">Tratamentos para conversar na avaliação</p>
+              <p class="summary__h">Para conversar na avaliação</p>
               <ul data-psum></ul>
             </div>
             <div>
@@ -419,7 +544,7 @@ const plannerData = {
   <section class="sec reviews" aria-labelledby="rev-t">
     <div class="wrap">
       <div class="sec__head">
-        <span class="kicker" data-reveal>Depoimentos</span>
+        <span class="kicker" data-reveal>Quem já passou por aqui</span>
         <Split as="h2" class="h2" id="rev-t" text="O que dizem os *pacientes* da Dra. Thuelen?" />
       </div>
       <div data-quotes>
@@ -447,9 +572,9 @@ const plannerData = {
   <section class="sec faq" id="duvidas" aria-labelledby="faq-t">
     <div class="wrap faq__grid">
       <div>
-        <span class="kicker" data-reveal>Tire suas dúvidas</span>
-        <Split as="h2" class="h2" id="faq-t" text="Perguntas frequentes sobre o *Centro Dra. Thuelen*" />
-        <p class="lead" data-reveal style="margin-top:18px">Não encontrou sua dúvida? Mande uma mensagem: a equipe responde pelo WhatsApp.</p>
+        <span class="kicker" data-reveal>Antes de agendar</span>
+        <Split as="h2" class="h2" id="faq-t" text="Perguntas que *todo paciente faz*" />
+        <p class="lead" data-reveal style="margin-top:18px">Ficou alguma dúvida? Mande uma mensagem: a equipe responde pelo WhatsApp.</p>
         <div data-reveal style="margin-top:22px"><a class="btn btn--ghost" style="color:var(--teal)" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" />Perguntar no WhatsApp</a></div>
       </div>
       <div class="acc">
@@ -467,11 +592,11 @@ const plannerData = {
   <section class="sec units on-dark" id="unidades" aria-labelledby="uni-t">
     <div class="wrap">
       <div class="sec__head">
-        <span class="kicker" data-reveal>Localização</span>
-        <Split as="h2" class="h2" id="uni-t" text="Onde fica o *dentista* em Brusque?" />
+        <span class="kicker" data-reveal>Duas unidades em Brusque</span>
+        <Split as="h2" class="h2" id="uni-t" text="Onde fica o *Centro Dra. Thuelen?*" />
         <p class="answer" data-reveal>
-          O Centro Dra. Thuelen tem duas unidades em Brusque - SC: a Unidade Centro, na R. Rodrigues Alves, 249 (Centro 1), e a
-          Unidade Paquetá, na R. Padre Antônio Eising, 262. As duas recebem pacientes de Brusque e região com o mesmo padrão de cuidado.
+          Na Unidade Centro, R. Rodrigues Alves, 249 (Centro 1), com estacionamento próprio, e na Unidade Paquetá, R. Padre Antônio
+          Eising, 262. As duas recebem pacientes de Brusque e região com o mesmo padrão de cuidado.
         </p>
       </div>
       <div data-units>
@@ -487,9 +612,9 @@ const plannerData = {
               <h3>{u.name}</h3>
               <div class="unit__row"><Icon name="pin" /><span>{u.street} – {u.district}<small>Brusque - SC{u.postalCode ? `, ${u.postalCode}` : ''}</small></span></div>
               <div class="unit__row"><Icon name="wa" /><span>WhatsApp {u.phoneLabel}<small>Agendamento e dúvidas</small></span></div>
-              <div class="unit__row"><Icon name="shield" /><span>Atendimento particular<small>Recibos e laudos para reembolso do plano</small></span></div>
+              <div class="unit__row"><Icon name="check" /><span>{u.perks.join(' · ')}<small>Atendimento particular, com recibo para reembolso</small></span></div>
               <div class="unit__btns">
-                <a class="btn" href={wa(u.whatsapp, `Olá! Vim pelo site e gostaria de agendar uma avaliação na ${u.name}.`)} target="_blank" rel="noopener"><Icon name="wa" />Agendar nesta unidade</a>
+                <a class="btn" href={wa(u.whatsapp, `Olá! Vim pelo site e gostaria de agendar uma avaliação na ${u.name}.`)} target="_blank" rel="noopener"><Icon name="wa" />Agendar aqui</a>
                 <a class="btn btn--ghost" style="color:var(--teal)" href={u.mapsUrl} target="_blank" rel="noopener">Como chegar <Icon name="arrow" class="arrow" /></a>
               </div>
             </div>
@@ -509,14 +634,31 @@ const plannerData = {
   <!-- ================= CTA FINAL ================= -->
   <section class="sec final" aria-labelledby="final-t">
     <span class="final__ring" aria-hidden="true"></span><span class="final__ring" aria-hidden="true"></span><span class="final__ring" aria-hidden="true"></span>
-    <div class="wrap" style="position:relative">
-      <span class="kicker" data-reveal>O primeiro passo</span>
-      <Split as="h2" class="h2" id="final-t" text="Seu sorriso merece cuidado, *atenção e confiança.*" />
-      <p class="lead" data-reveal>Não deixe para depois. Dê o primeiro passo para transformar não apenas o seu sorriso, mas a sua autoestima e qualidade de vida.</p>
-      <div class="final__ctas" data-reveal>
-        <a class="btn btn--ink" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick data-magnetic><Icon name="wa" />Agendar minha avaliação</a>
-        <a class="btn btn--ghost" style="color:var(--petrol-900)" href="#avaliacao">Montar avaliação</a>
+    <div class="wrap final__grid">
+      <figure class="final__photo" data-reveal="scale">
+        <Picture src={draEspelho} formats={['avif']} fallbackFormat="webp" widths={[300, 450]} sizes="(min-width: 960px) 300px, 56vw" alt="Dra. Thuelen Mellão na clínica, refletida em um espelho de moldura dourada" loading="lazy" />
+      </figure>
+      <div>
+        <span class="kicker" data-reveal>O primeiro passo</span>
+        <Split as="h2" class="h2" id="final-t" text="Seu sorriso merece ser *planejado para você.*" />
+        <p class="lead" data-reveal>Não deixe para depois. Uma conversa com a Dra. Thuelen pode mudar não só o seu sorriso, mas a forma como você se sente ao sorrir.</p>
+        <div class="final__ctas" data-reveal>
+          <a class="btn btn--ink" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick data-magnetic><Icon name="wa" />Agendar minha avaliação</a>
+          <a class="btn btn--ghost" style="color:var(--petrol-900)" href="#avaliacao">Montar avaliação</a>
+        </div>
       </div>
     </div>
   </section>
+
+  <!-- ================= VISUALIZADOR DE STORIES ================= -->
+  <dialog class="sv" data-sv aria-label="Destaques">
+    <div class="sv__bars" data-sv-bars></div>
+    <div class="sv__top"><span class="sv__who"><img src={logoSmall} width="32" height="32" alt="" loading="lazy" /><b data-sv-label></b></span><button type="button" class="sv__x" data-sv-close aria-label="Fechar">×</button></div>
+    <div class="sv__stage" data-sv-stage></div>
+    <p class="sv__cap" data-sv-cap></p>
+    <button type="button" class="sv__nav sv__nav--prev" data-sv-prev aria-label="Anterior"></button>
+    <button type="button" class="sv__nav sv__nav--next" data-sv-next aria-label="Próximo"></button>
+    <a class="sv__cta btn btn--blush" href={DEFAULT_WA} target="_blank" rel="noopener" data-pick><Icon name="wa" />Quero agendar</a>
+    <script type="application/json" data-sv-data set:html={JSON.stringify(storiesData)} />
+  </dialog>
 </Base>

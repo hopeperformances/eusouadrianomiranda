@@ -333,3 +333,129 @@ idle(() => {
     }));
   }
 });
+
+/* ---------- manifesto: palavras acendem com a rolagem ---------- */
+const words = $$('[data-words] span');
+if (words.length) {
+  const box = $('[data-words]')!;
+  let tk = false;
+  const light = () => {
+    tk = false;
+    const r = box.getBoundingClientRect();
+    const p = Math.min(1, Math.max(0, (innerHeight * 0.85 - r.top) / (r.height + innerHeight * 0.35)));
+    const n = reduce ? words.length : Math.round(p * words.length);
+    words.forEach((w, i) => w.classList.toggle('on', i < n));
+  };
+  addEventListener('scroll', () => { if (!tk) { tk = true; requestAnimationFrame(light); } }, { passive: true });
+  idle(light);
+}
+
+/* ---------- vídeo do tour: só carrega quando aparece ---------- */
+$$<HTMLVideoElement>('[data-lazyvideo]').forEach((v) => {
+  const vio = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) {
+      const s = $<HTMLSourceElement>('source', v);
+      if (s && !s.src) { s.src = s.dataset.src!; v.load(); }
+      if (!reduce) v.play().catch(() => {});
+    } else v.pause();
+  }, { threshold: 0.35 });
+  vio.observe(v);
+});
+
+/* ---------- ortopedia: checklist de sinais ---------- */
+const orto = $('[data-orto]');
+if (orto) {
+  const res = $('[data-orto-result]', orto)!;
+  const send = $<HTMLAnchorElement>('[data-orto-send]', orto)!;
+  const base = send.href.split('?')[0];
+  orto.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-sign]');
+    if (!b) return;
+    b.setAttribute('aria-pressed', String(b.getAttribute('aria-pressed') !== 'true'));
+    const on = $$('[data-sign][aria-pressed="true"]', orto).map((x) => x.textContent!.trim());
+    res.textContent = on.length
+      ? `${on.length === 1 ? 'Esse sinal merece' : 'Esses sinais merecem'} uma avaliação. Na infância, o crescimento é um aliado do tratamento.`
+      : 'Toque nos sinais que você reconhece.';
+    const msg = `Olá! Gostaria de agendar uma avaliação de ortopedia funcional dos maxilares para meu filho(a) com a Dra. Thuelen.${on.length ? `\n\nPercebi: ${on.join('; ').toLowerCase()}.` : ''}`;
+    send.href = `${base}?text=${encodeURIComponent(msg)}`;
+  });
+}
+
+/* ---------- stories (estilo Instagram) ---------- */
+const sv = $<HTMLDialogElement>('[data-sv]');
+if (sv && typeof sv.showModal === 'function') {
+  type Item = { type: 'img' | 'video'; src: string; alt: string; cap: string; poster?: string };
+  type Story = { id: string; label: string; items: Item[] };
+  const stories: Story[] = JSON.parse($('[data-sv-data]', sv)!.textContent || '[]');
+  const bars = $('[data-sv-bars]', sv)!;
+  const stage = $('[data-sv-stage]', sv)!;
+  const cap = $('[data-sv-cap]', sv)!;
+  const label = $('[data-sv-label]', sv)!;
+  const IMG_MS = 5200;
+  let s = 0, k = 0, timer = 0;
+
+  const clear = () => { clearTimeout(timer); stage.querySelector('video')?.pause(); };
+  const close = () => { clear(); if (sv.open) sv.close(); };
+  const show = () => {
+    clear();
+    const st = stories[s], it = st.items[k];
+    label.textContent = st.label;
+    bars.innerHTML = st.items.map((_, i) => `<span class="${i < k ? 'done' : ''}"><i></i></span>`).join('');
+    stage.innerHTML = '';
+    cap.textContent = it.cap;
+    const bar = bars.children[k] as HTMLElement;
+    const start = (ms: number) => { bar.style.setProperty('--dur', `${ms}ms`); void bar.offsetWidth; bar.classList.add('on'); timer = window.setTimeout(next, ms); };
+    if (it.type === 'video') {
+      const v = document.createElement('video');
+      Object.assign(v, { src: it.src, muted: true, playsInline: true, autoplay: true, poster: it.poster || '' });
+      v.setAttribute('aria-label', it.alt);
+      stage.appendChild(v);
+      v.addEventListener('loadedmetadata', () => start(Math.max(4000, v.duration * 1000)), { once: true });
+      v.play().catch(() => {});
+    } else {
+      const im = new Image();
+      im.alt = it.alt; im.decoding = 'async'; im.src = it.src;
+      stage.appendChild(im);
+      const go = () => start(IMG_MS);
+      im.complete ? go() : (im.onload = go, im.onerror = go);
+    }
+    // pré-carrega a próxima imagem
+    const nx = st.items[k + 1] || stories[s + 1]?.items[0];
+    if (nx?.type === 'img') { const p = new Image(); p.src = nx.src; }
+    $$('[data-story]')[s]?.classList.add('is-seen');
+  };
+  const next = () => {
+    if (k < stories[s].items.length - 1) k++;
+    else if (s < stories.length - 1) { s++; k = 0; }
+    else return close();
+    show();
+  };
+  const prev = () => {
+    if (k > 0) k--;
+    else if (s > 0) { s--; k = stories[s].items.length - 1; }
+    show();
+  };
+  const open = (i: number) => { s = i; k = 0; sv.showModal(); show(); };
+
+  document.addEventListener('click', (e) => {
+    const t = (e.target as Element).closest<HTMLElement>('[data-story],[data-story-open]');
+    if (t) open(Number(t.dataset.story ?? t.dataset.storyOpen));
+  });
+  $('[data-sv-next]', sv)!.addEventListener('click', next);
+  $('[data-sv-prev]', sv)!.addEventListener('click', prev);
+  $('[data-sv-close]', sv)!.addEventListener('click', close);
+  sv.addEventListener('close', clear);
+  sv.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') next(); if (e.key === 'ArrowLeft') prev(); });
+  // segurar pausa; deslizar para baixo fecha
+  let y0 = 0, x0 = 0, t0 = 0;
+  sv.addEventListener('pointerdown', (e) => { y0 = e.clientY; x0 = e.clientX; t0 = Date.now(); sv.classList.add('is-paused'); clearTimeout(timer); stage.querySelector('video')?.pause(); });
+  sv.addEventListener('pointerup', (e) => {
+    sv.classList.remove('is-paused');
+    const dy = e.clientY - y0, dx = e.clientX - x0;
+    if (dy > 90 && Math.abs(dx) < 80) return close();
+    if (Date.now() - t0 > 350) { // foi um "segurar": retoma de onde parou
+      const v = stage.querySelector('video'); v?.play().catch(() => {});
+      timer = window.setTimeout(next, 2500);
+    }
+  });
+}

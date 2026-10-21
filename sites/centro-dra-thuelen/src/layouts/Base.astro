@@ -36,10 +36,11 @@ const baseGraph = [
     '@id': PERSON_ID,
     name: BRAND.doctor,
     jobTitle: BRAND.role,
-    description: 'Cirurgiã-dentista em Brusque - SC, especialista em quatro áreas, mestranda e MBA. Habilitada em sedação para crianças e adultos e experiente com laser de alta e baixa potência.',
+    description: 'Cirurgiã-dentista em Brusque - SC, especialista em quatro áreas, mestranda e MBA. Habilitada em sedação para crianças e adultos, experiente com laser de alta e baixa potência e dedicada ao planejamento de sorrisos naturais e à ortopedia funcional dos maxilares na infância.',
     identifier: { '@type': 'PropertyValue', propertyID: 'CRO-SC', value: '17911' },
     worksFor: { '@id': ORG_ID },
-    sameAs: [BRAND.instagram],
+    knowsAbout: ['Odontologia estética', 'Lentes de contato dental', 'Ortopedia Funcional dos Maxilares', 'Odontopediatria', 'Sedação odontológica', 'Laserterapia'],
+    sameAs: [BRAND.instagramDra],
   },
   ...UNITS.map((u) => ({
     '@type': 'Dentist',
@@ -127,10 +128,11 @@ const h = (id: string) => (isHome ? `#${id}` : `/#${id}`);
             <span><b>Dra. Thuelen Mellão</b><small>Odontologia · Brusque</small></span>
           </a>
           <nav class="nav" aria-label="Principal">
+            <a href={h('resultados')}>Resultados</a>
             <a href={h('sobre')}>A Doutora</a>
             <a href={h('tratamentos')}>Tratamentos</a>
-            <a href={h('infantil')}>Infantil</a>
-            <a href={h('avaliacao')}>Monte sua avaliação</a>
+            <a href={h('infantil')}>Para seu filho</a>
+            <a href={h('clinica')}>A clínica</a>
             <a href={h('unidades')}>Unidades</a>
           </nav>
           <a class="btn btn--blush hdr__cta" href={h('avaliacao')} data-magnetic>Agendar avaliação <Icon name="arrow" class="arrow" /></a>
@@ -140,12 +142,13 @@ const h = (id: string) => (isHome ? `#${id}` : `/#${id}`);
     </header>
 
     <nav class="mnav" id="mnav" aria-label="Menu móvel">
-      <a href={h('sobre')}><small>01</small>A Doutora</a>
-      <a href={h('tratamentos')}><small>02</small>Tratamentos</a>
-      <a href={h('infantil')}><small>03</small>Infantil</a>
-      <a href={h('avaliacao')}><small>04</small>Monte sua avaliação</a>
-      <a href={h('duvidas')}><small>05</small>Dúvidas</a>
-      <a href={h('unidades')}><small>06</small>Unidades</a>
+      <a href={h('resultados')}><small>01</small>Resultados</a>
+      <a href={h('sobre')}><small>02</small>A Doutora</a>
+      <a href={h('tratamentos')}><small>03</small>Tratamentos</a>
+      <a href={h('infantil')}><small>04</small>Para seu filho</a>
+      <a href={h('clinica')}><small>05</small>A clínica</a>
+      <a href={h('avaliacao')}><small>06</small>Monte sua avaliação</a>
+      <a href={h('unidades')}><small>07</small>Unidades</a>
       <div class="mnav__foot">{BRAND.doctor} · {BRAND.cro}<br />Centro e Paquetá · Brusque - SC</div>
     </nav>
 
@@ -186,7 +189,8 @@ const h = (id: string) => (isHome ? `#${id}` : `/#${id}`);
             <ul>
               <li><a href={h('sobre')}>Quem é a Dra. Thuelen</a></li>
               <li><a href={h('duvidas')}>Perguntas frequentes</a></li>
-              <li><a href={BRAND.instagram} target="_blank" rel="noopener">Instagram</a></li>
+              <li><a href={BRAND.instagram} target="_blank" rel="noopener">Instagram da clínica</a></li>
+              <li><a href={BRAND.instagramDra} target="_blank" rel="noopener">Instagram da Dra. Thuelen</a></li>
               <li><a href={DEFAULT_WA} target="_blank" rel="noopener">Agendar pelo WhatsApp</a></li>
             </ul>
           </div>

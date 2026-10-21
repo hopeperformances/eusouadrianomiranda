@@ -8,11 +8,14 @@ export const GET: APIRoute = ({ site }) => {
 > Consultório odontológico em Brusque - SC, com duas unidades (Centro e Paquetá). Responsável técnica: ${BRAND.doctor}, ${BRAND.role}, ${BRAND.cro}. Atendimento particular para crianças e adultos, com recibos e laudos para reembolso de plano de saúde.
 
 ## Sobre a ${BRAND.doctor}
-${CREDENTIALS.map((c) => `- ${c.title}: ${c.text}`).join('\n')}
-- Mais de 10 anos de dedicação à área da saúde.
+${CREDENTIALS.map((c) => `- ${c.k} ${c.label}: ${c.text}`).join('\n')}
+- Habilitada em sedação para crianças e adultos; experiência com laser de alta e baixa potência.
+- Planejamento de sorriso (Smile Design) com fotografia profissional, simulação digital de antes e depois e escolha de cor em escala.
+- Atualização internacional: esteve no King's College London, referência mundial em Odontologia.
+- Instagram da Dra.: ${BRAND.instagramDra}
 
 ## Unidades
-${UNITS.map((u) => `- ${u.name}: ${u.street} – ${u.district}, Brusque - SC${u.postalCode ? `, ${u.postalCode}` : ''}. WhatsApp: ${u.phoneLabel} (https://wa.me/${u.whatsapp}).`).join('\n')}
+${UNITS.map((u) => `- ${u.name}: ${u.street} – ${u.district}, Brusque - SC${u.postalCode ? `, ${u.postalCode}` : ''}. WhatsApp: ${u.phoneLabel} (https://wa.me/${u.whatsapp}). ${u.perks.join('. ')}.`).join('\n')}
 - Região atendida: ${BRAND.areaServed.join(', ')}.
 
 ## Tratamentos
