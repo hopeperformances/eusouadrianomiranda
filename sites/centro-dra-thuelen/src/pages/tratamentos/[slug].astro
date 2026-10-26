@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
-import Split from '../../components/Split.astro';
 import { Picture } from 'astro:assets';
 import { TREATMENTS, UNITS, FAQ, BRAND, wa, type Treatment } from '../../data/site';
 
@@ -12,8 +11,8 @@ const { t } = Astro.props as { t: Treatment };
 const site = Astro.site!.toString().replace(/\/$/, '');
 const url = `${site}/tratamentos/${t.slug}/`;
 const others = TREATMENTS.filter((x) => x.slug !== t.slug);
-const msg = `Olá! Vim pelo site e quero agendar uma avaliação de ${t.title} com a Dra. Thuelen.`;
-const faq = FAQ.filter((f) => /primeira avaliação|unidades|convênios|medo|agendar/.test(f.q));
+const msg = `Olá! Vim pelo site e quero agendar uma avaliação de ${t.title.toLowerCase()} com a Dra. Thuelen.`;
+const faq = FAQ.filter((f) => /primeira consulta|Quanto custa|convênio|sedação|unidades/.test(f.q));
 
 const schema = [
   {
@@ -49,93 +48,79 @@ const schema = [
 ];
 ---
 <Base title={t.seoTitle} description={t.seoDesc} schema={schema} ogImage={t.img.src}>
-  <section class="phero on-dark">
-    <div class="wrap phero__grid">
-      <div>
-        <nav class="crumbs" aria-label="Você está em" data-reveal>
-          <ol><li><a href="/">Início</a></li><li><a href="/#tratamentos">Tratamentos</a></li><li aria-current="page">{t.title}</li></ol>
-        </nav>
-        <span class="kicker" style="margin-top:22px" data-reveal>{t.tag} · Brusque - SC</span>
-        <Split as="h1" class="h1" text={`${t.title} *em Brusque*`} />
-        <p class="hero__lead" data-reveal style="--d:.4s">{t.hook}</p>
-        <div class="hero__ctas" data-reveal style="--d:.55s">
-          <a class="btn btn--blush" href={wa(UNITS[0].whatsapp, msg)} target="_blank" rel="noopener" data-pick data-msg={msg} data-magnetic><Icon name="wa" />Agendar avaliação</a>
-          <a class="btn btn--ghost" href="/#avaliacao">Montar avaliação</a>
-        </div>
-      </div>
-      <div class="phero__img" data-reveal="mask">
-        <Picture src={t.img} formats={['avif']} fallbackFormat="webp" widths={[360, 540, 720]} sizes="(min-width: 960px) 440px, 90vw" alt={t.alt} loading="eager" fetchpriority="high" />
+  <section class="phero">
+    <div class="phero__img">
+      <Picture src={t.img} formats={['avif']} fallbackFormat="webp" widths={[480, 720]} sizes="(min-width: 960px) 46vw, 100vw" alt={t.alt} loading="eager" fetchpriority="high" />
+    </div>
+    <div class="wrap phero__body">
+      <nav class="crumbs" aria-label="Você está em">
+        <ol><li><a href="/">Início</a></li><li><a href="/#tratamentos">Tratamentos</a></li><li aria-current="page">{t.title}</li></ol>
+      </nav>
+      <h1 class="d1 intro" style="font-size:clamp(40px,10vw,76px)">{t.title} em Brusque.</h1>
+      <p class="lead intro" style="--d:.1s">{t.hook}</p>
+      <div class="btns intro" style="--d:.2s">
+        <a class="btn" href={wa(UNITS[0].whatsapp, msg)} target="_blank" rel="noopener" data-pick data-msg={msg}><Icon name="wa" />Agendar avaliação</a>
+        <a class="btn btn--line" href="#detalhes">Como funciona</a>
       </div>
     </div>
   </section>
 
-  <section class="sec" style="background:var(--ivory)">
-    <div class="wrap faq__grid">
+  <section class="sec" id="detalhes">
+    <div class="wrap tpage">
       <article class="prose">
         <h2>{t.question}</h2>
-        <p class="answer">{t.text}</p>
-        <h2>Esse tratamento é para você se…</h2>
-        <ul class="foryou">
+        <p>{t.text}</p>
+        <h2>É indicado se:</h2>
+        <ul class="check">
           {t.forYou.map((f) => <li><Icon name="check" />{f}</li>)}
         </ul>
-        <h2>Como é o tratamento com a Dra. Thuelen?</h2>
+        <h2>Como é feito com a Dra. Thuelen</h2>
         <p>
-          Tudo começa por uma conversa: a Dra. Thuelen ouve o que te incomoda, examina com calma e tira suas dúvidas. Depois, o seu
-          caso recebe um planejamento minucioso, explicado sem termos difíceis, para você entender o que será feito e o porquê de
-          cada etapa.
+          Primeiro vem a avaliação: a Dra. Thuelen conversa sobre o que te incomoda, examina e, se precisar, faz fotos ou
+          escaneamento digital. Depois ela explica o plano etapa por etapa, o que será feito e por quê. Para quem tem medo,
+          há sedação para crianças e adultos e laser de alta e baixa potência.
         </p>
-        <ol class="why__list" style="margin-top:10px">
-          <li><h3>Avaliação e escuta</h3><p>Entender sua necessidade real antes de qualquer indicação.</p></li>
-          <li><h3>Planejamento do caso</h3><p>Segurança estética e funcional pensada em detalhe.</p></li>
-          <li><h3>Tratamento com conforto</h3><p>Sedação para crianças e adultos e laser de alta e baixa potência quando indicado.</p></li>
-          <li><h3>Acompanhamento próximo</h3><p>Ao seu lado antes, durante e depois do tratamento.</p></li>
-        </ol>
-        <h2>Onde fazer {t.title.toLowerCase()} em Brusque?</h2>
+        <h2>Onde fazer {t.title.toLowerCase()} em Brusque</h2>
         <p>
-          No Centro Dra. Thuelen, nas duas unidades de Brusque: {UNITS.map((u) => `${u.name} (${u.street})`).join(' e ')}.
-          Os atendimentos são particulares, com recibos e laudos para você solicitar reembolso ao seu plano de saúde.
+          No Centro Dra. Thuelen, nas unidades {UNITS.map((u) => `${u.short} (${u.street})`).join(' e ')}. A Unidade Centro tem
+          estacionamento próprio. O atendimento é particular, com recibo e laudo para pedir reembolso ao plano de saúde.
         </p>
       </article>
-      <aside style="display:grid;gap:18px;align-content:start">
-        <div class="unit__info" style="background:var(--white)">
-          <span class="kicker">Agende pela unidade</span>
+      <aside class="aside">
+        <div class="aside__box">
+          <b>Agendar pelo WhatsApp</b>
           {UNITS.map((u) => (
             <a class="sheet__opt" href={wa(u.whatsapp, `${msg} Prefiro a ${u.name}.`)} target="_blank" rel="noopener">
-              <Icon name="pin" /><span><b>{u.name}</b><small>{u.street} – {u.district}</small></span><Icon name="arrow" class="arrow" />
+              <span><b>{u.name}</b><small>{u.street}</small></span><Icon name="wa" />
             </a>
           ))}
         </div>
         <div>
-          <p class="kicker" style="margin-bottom:12px">Outros tratamentos</p>
+          <p style="font-weight:600;margin-bottom:10px">Outros tratamentos</p>
           <div class="related">{others.map((o) => <a href={`/tratamentos/${o.slug}/`}>{o.title}</a>)}</div>
         </div>
       </aside>
     </div>
   </section>
 
-  <section class="sec faq">
-    <div class="wrap faq__grid">
-      <div>
-        <span class="kicker">Dúvidas</span>
-        <h2 class="h2" style="margin-top:14px">Perguntas frequentes</h2>
-      </div>
+  <section class="sec sand">
+    <div class="wrap faq">
+      <div><h2 class="d2">Perguntas frequentes.</h2></div>
       <div class="acc">
         {faq.map((f, i) => (
-          <details open={i === 0}><summary><h3 style="font:inherit;margin:0">{f.q}</h3><i aria-hidden="true"></i></summary><p class="acc__a">{f.a}</p></details>
+          <details open={i === 0}><summary><h3>{f.q}</h3><i aria-hidden="true"></i></summary><p>{f.a}</p></details>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="sec final">
-    <span class="final__ring" aria-hidden="true"></span><span class="final__ring" aria-hidden="true"></span><span class="final__ring" aria-hidden="true"></span>
-    <div class="wrap" style="position:relative">
-      <span class="kicker">O primeiro passo</span>
-      <h2 class="h2">Vamos conversar sobre <em>{t.title.toLowerCase()}?</em></h2>
-      <p class="lead">A avaliação é o momento de entender o seu caso e montar um plano feito para você.</p>
-      <div class="final__ctas">
-        <a class="btn btn--ink" href={wa(UNITS[0].whatsapp, msg)} target="_blank" rel="noopener" data-pick data-msg={msg}><Icon name="wa" />Agendar pelo WhatsApp</a>
+  <section class="cta dark">
+    <div class="wrap cta__in">
+      <div>
+        <h2 class="d2">Agende sua avaliação.</h2>
+        <p class="lead" style="margin-top:14px;margin-bottom:0">{t.title} com a Dra. Thuelen Mellão, em Brusque.</p>
       </div>
+      <a class="btn" href={wa(UNITS[0].whatsapp, msg)} target="_blank" rel="noopener" data-pick data-msg={msg}><Icon name="wa" />Agendar pelo WhatsApp</a>
     </div>
   </section>
 </Base>

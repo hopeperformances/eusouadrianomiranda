@@ -97,7 +97,7 @@ export type Treatment = {
   title: string;
   short: string;
   tag: string;
-  hook: string; // a dor/desejo do paciente, em uma frase
+  hook: string; // resumo factual em uma frase
   text: string; // descrição validada
   forYou: string[]; // derivado do texto validado
   img: ImageMetadata;
@@ -110,10 +110,10 @@ export type Treatment = {
 export const TREATMENTS: Treatment[] = [
   {
     slug: 'lentes-de-contato-dental',
-    title: 'Lentes de Contato',
+    title: 'Lentes de contato',
     short: 'Lentes',
     tag: 'Estética',
-    hook: 'Para quem quer o sorriso dos sonhos sem ficar com cara de “dente feito”.',
+    hook: 'Porcelana feita sob medida para mudar formato, cor e tamanho dos dentes, preservando o dente natural.',
     text: 'Lâminas ultrafinas de porcelana pura, confeccionadas sob medida em laboratório para desenhar um sorriso harmonioso. Corrigem desgastes, formatos insatisfatórios, fraturas leves e espaçamentos (diastemas), preservando ao máximo a estrutura original do dente.',
     forYou: ['Seus dentes estão desgastados ou com formato que te incomoda', 'Existem espaços (diastemas) entre os dentes', 'Você quer mudar o sorriso preservando o dente natural'],
     img: imgLentes,
@@ -124,10 +124,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'facetas-esteticas',
-    title: 'Facetas Estéticas',
+    title: 'Facetas estéticas',
     short: 'Facetas',
     tag: 'Estética',
-    hook: 'Para quem quer renovar o sorriso rápido, com resultado no mesmo dia.',
+    hook: 'Correção feita dente a dente no consultório, com resultado na mesma sessão.',
     text: 'Escultura manual feita dente a dente, diretamente no consultório. É a opção mais ágil para corrigir imperfeições de formato, pequenas fraturas e tonalidades, renovando a estética do sorriso com excelente custo-benefício e resultados imediatos.',
     forYou: ['Um dente lascou ou tem formato irregular', 'A cor de alguns dentes não combina com o resto', 'Você busca um resultado rápido e com bom custo-benefício'],
     img: imgFacetas,
@@ -138,10 +138,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'alinhadores-invisiveis',
-    title: 'Alinhadores Invisíveis',
+    title: 'Alinhadores invisíveis',
     short: 'Alinhadores',
     tag: 'Ortodontia digital',
-    hook: 'Para quem quer alinhar os dentes sem que ninguém perceba.',
+    hook: 'Placas transparentes e removíveis, planejadas a partir do escaneamento 3D da sua boca.',
     text: 'A tecnologia mais moderna e discreta para alinhar os dentes. Placas transparentes e personalizadas, produzidas a partir do escaneamento digital 3D da sua boca, que permitem alimentação livre, higienização perfeita e previsibilidade nos resultados.',
     forYou: ['Você quer alinhar os dentes sem aparelho aparente', 'Prefere poder comer e escovar normalmente', 'Gosta de saber, antes de começar, onde o tratamento vai chegar'],
     img: imgAlinhadores,
@@ -152,10 +152,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'ortopedia-funcional-dos-maxilares',
-    title: 'Ortopedia Funcional dos Maxilares',
+    title: 'Ortopedia funcional dos maxilares',
     short: 'Ortopedia infantil',
     tag: 'Crescimento facial',
-    hook: 'Para pais que não querem esperar o filho crescer para descobrir que o melhor momento já passou.',
+    hook: 'Avaliação do crescimento da maxila e da mandíbula em crianças, enquanto ainda dá para direcionar esse crescimento.',
     text: 'Dentes nascendo amontoados ou os dentes de baixo à frente dos de cima podem ser sinal de que a maxila e a mandíbula não estão se desenvolvendo como deveriam. Na infância, o crescimento é um grande aliado do tratamento: identificar essas alterações cedo pode fazer toda a diferença nas possibilidades de correção.',
     forYou: ['Os dentes do seu filho estão nascendo sem espaço, amontoados', 'Os dentes de baixo ficam à frente dos de cima ao morder', 'Você quer entender se existe uma janela de tratamento agora'],
     img: imgOrtopedia,
@@ -166,10 +166,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'implantes-dentarios',
-    title: 'Implantes Dentários',
+    title: 'Implantes dentários',
     short: 'Implantes',
     tag: 'Reabilitação',
-    hook: 'Para quem perdeu um dente e quer voltar a mastigar e sorrir sem insegurança.',
+    hook: 'Reposição de dentes perdidos com pino de titânio, feita no bloco cirúrgico da própria clínica.',
     text: 'Pinos de titânio fixados no osso que funcionam como raízes artificiais firmes e seguras para novos dentes. Devolvem a capacidade de mastigar, ajudam a prevenir a perda óssea e trazem de volta a segurança no dia a dia, com bloco cirúrgico próprio na clínica.',
     forYou: ['Você perdeu um ou mais dentes', 'Evita sorrir ou mastigar de um lado por insegurança', 'Quer uma solução fixa, sem prótese removível'],
     img: imgImplantes,
@@ -180,10 +180,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'aparelhos-ortodonticos',
-    title: 'Aparelhos Ortodônticos',
+    title: 'Aparelhos ortodônticos',
     short: 'Aparelhos',
     tag: 'Ortodontia',
-    hook: 'Para quem quer corrigir a mordida e alinhar o sorriso de vez.',
+    hook: 'Aparelho fixo metálico, de safira ou autoligável para corrigir mordida, dentes tortos e espaços.',
     text: 'Correção precisa de problemas de mordida, apinhamentos ou espaçamentos. Desde bráquetes tradicionais (metálicos ou de safira) até sistemas autoligáveis modernos, para realinhar a arcada, aliviar tensões na face e melhorar a mastigação.',
     forYou: ['Seus dentes estão tortos ou encavalados', 'A mordida não encaixa bem', 'Você prefere um aparelho fixo, metálico ou estético'],
     img: imgAparelhos,
@@ -194,10 +194,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'limpeza-e-prevencao',
-    title: 'Limpeza e Prevenção',
+    title: 'Limpeza e prevenção',
     short: 'Limpeza',
     tag: 'Prevenção',
-    hook: 'Para quem quer manter a boca saudável antes que algo doa.',
+    hook: 'Limpeza com ultrassom para remover tártaro, placa e manchas e prevenir problemas na gengiva.',
     text: 'Profilaxia profissional essencial para a saúde bucal. Remove com ultrassom placas bacterianas invisíveis, manchas e tártaro endurecido, prevenindo doenças na gengiva, sensibilidade e cáries.',
     forYou: ['Faz tempo desde a sua última limpeza', 'Sua gengiva sangra ao escovar', 'Você percebe manchas ou tártaro'],
     img: imgLimpeza,
@@ -208,10 +208,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'tratamento-de-canal',
-    title: 'Tratamento de Canal',
+    title: 'Tratamento de canal',
     short: 'Canal',
     tag: 'Endodontia',
-    hook: 'Para quem está com dor e quer salvar o dente sem sofrimento.',
+    hook: 'Tratamento para salvar o dente quando a cárie ou um trauma atinge o nervo.',
     text: 'Anestesia localizada avançada e tecnologia para salvar o dente cuja parte interna (o “nervinho”) foi atingida por cárie profunda ou trauma. Restaura a saúde do dente de forma segura e confortável.',
     forYou: ['Você sente dor forte ou latejante em um dente', 'O dente fica sensível ao quente ou ao frio por muito tempo', 'Já tentou soluções temporárias e a dor voltou'],
     img: imgCanal,
@@ -222,10 +222,10 @@ export const TREATMENTS: Treatment[] = [
   },
   {
     slug: 'ronco-e-bruxismo',
-    title: 'Ronco e Bruxismo',
+    title: 'Ronco e bruxismo',
     short: 'Ronco e bruxismo',
     tag: 'Sono e DTM',
-    hook: 'Para quem acorda cansado, com dor de cabeça ou com o maxilar travado.',
+    hook: 'Placa miorrelaxante para quem range os dentes e aparelho intraoral para ronco e apneia.',
     text: 'Tratamento para desordens do sono, tensões musculares e dores de cabeça ao acordar. Placas miorrelaxantes personalizadas protegem os dentes do desgaste do bruxismo, e aparelhos intraorais ajudam no controle do ronco e da apneia, devolvendo noites tranquilas.',
     forYou: ['Você range ou aperta os dentes à noite', 'Acorda com dor de cabeça ou na mandíbula', 'Alguém reclama do seu ronco'],
     img: imgRonco,
@@ -253,31 +253,45 @@ export const REVIEWS = [
 
 export const FAQ = [
   {
-    q: 'Como funciona a primeira avaliação?',
-    a: 'É uma conversa antes de ser um procedimento. A Dra. Thuelen ouve o que te incomoda, examina com calma, tira suas dúvidas e só então monta um planejamento para o seu caso, explicado sem termos difíceis.',
+    q: 'Como é a primeira consulta?',
+    a: 'A Dra. Thuelen conversa com você sobre o que te incomoda, examina com calma e, quando precisa, faz fotos ou escaneamento digital. No fim, explica o que pode ser feito, em quantas etapas e por quê.',
   },
   {
-    q: 'As lentes vão deixar meu sorriso artificial?',
-    a: 'O objetivo é o contrário. O planejamento leva em conta seus lábios, seu rosto e a cor ideal, escolhida com escala de cores, e busca preservar o máximo possível da estrutura natural do dente. A ideia é você olhar no espelho e enxergar você, só que melhor.',
+    q: 'Quanto custa o tratamento?',
+    a: 'Depende do que for indicado para o seu caso, por isso o valor é passado depois da avaliação. Os atendimentos são particulares.',
   },
   {
-    q: 'Tenho medo de dentista. Existe alguma opção?',
-    a: 'Sim. A Dra. Thuelen é habilitada em sedação para crianças e adultos e usa laser de alta e baixa potência para mais conforto e uma recuperação mais tranquila. Conte sobre o seu medo na avaliação: o plano é montado a partir dele.',
+    q: 'Vocês atendem convênio?',
+    a: 'Não. O atendimento é particular, mas a clínica fornece recibo e laudo para você pedir reembolso ao seu plano de saúde.',
   },
   {
-    q: 'Com que idade devo levar meu filho para avaliar a mordida?',
-    a: 'Não é preciso esperar todos os dentes permanentes nascerem. Se os dentes do seu filho estão nascendo amontoados ou os de baixo ficam à frente dos de cima, vale avaliar logo: na infância, o crescimento é um aliado e existe uma janela de oportunidade para a ortopedia funcional dos maxilares.',
+    q: 'As lentes de contato deixam o sorriso artificial?',
+    a: 'Não precisam deixar. O formato é planejado de acordo com os seus lábios e o seu rosto, a cor é escolhida na escala junto com você e a ideia é preservar o máximo possível do dente natural.',
   },
   {
-    q: 'Vocês aceitam convênios?',
-    a: 'Os atendimentos são particulares, para garantir tempo de consulta e materiais de alta qualidade. A clínica fornece recibos e laudos para você pedir reembolso ao seu plano de saúde.',
+    q: 'Tenho medo de dentista. Tem sedação?',
+    a: 'Tem. A Dra. Thuelen é habilitada em sedação para crianças e adultos e usa laser de alta e baixa potência para mais conforto. Avise sobre o medo no agendamento.',
   },
   {
-    q: 'Onde ficam as unidades e tem estacionamento?',
-    a: 'São duas unidades em Brusque: Unidade Centro (R. Rodrigues Alves, 249), com estacionamento próprio, e Unidade Paquetá (R. Padre Antônio Eising, 262). Você escolhe a mais prática na hora de agendar.',
+    q: 'Com que idade levar meu filho para avaliar a mordida?',
+    a: 'Não precisa esperar todos os dentes permanentes. Se os dentes estão nascendo amontoados ou os de baixo ficam à frente dos de cima ao morder, vale avaliar logo, porque o crescimento ajuda no tratamento.',
   },
   {
-    q: 'Como faço para agendar?',
-    a: 'Pelo WhatsApp. Toque em “Agendar”, escolha a unidade e a equipe retorna para encontrar o melhor horário para você.',
+    q: 'Onde ficam as unidades? Tem estacionamento?',
+    a: 'Unidade Centro: R. Rodrigues Alves, 249, Centro 1, com estacionamento próprio. Unidade Paquetá: R. Padre Antônio Eising, 262. As duas ficam em Brusque.',
   },
+  {
+    q: 'Como agendo?',
+    a: 'Pelo WhatsApp da unidade que for mais prática para você. A equipe responde e combina o horário.',
+  },
+];
+
+// Capítulos da home (padrão SPS): categoria + foto em tela cheia + serviços.
+export const CHAPTERS = [
+  { id: 'estetica', title: 'Lentes de contato e facetas', text: 'Lentes de porcelana feitas em laboratório ou facetas esculpidas no consultório para corrigir formato, cor, desgaste, pequenas fraturas e espaços entre os dentes.', items: ['lentes-de-contato-dental', 'facetas-esteticas'], extra: ['Smile Design'] },
+  { id: 'ortodontia', title: 'Alinhadores e aparelhos', text: 'Alinhadores transparentes planejados pelo escaneamento 3D da boca, ou aparelho fixo metálico, de safira ou autoligável.', items: ['alinhadores-invisiveis', 'aparelhos-ortodonticos'], extra: [] },
+  { id: 'infantil', title: 'Dentista infantil e ortopedia', text: 'Consulta com tempo para a criança se adaptar, espaço kids e avaliação do crescimento da maxila e da mandíbula.', items: ['ortopedia-funcional-dos-maxilares'], extra: ['Odontopediatria', 'Sedação infantil'] },
+  { id: 'implantes', title: 'Implantes dentários', text: 'Reposição de dentes perdidos com implante de titânio, feita no bloco cirúrgico da própria clínica.', items: ['implantes-dentarios'], extra: [] },
+  { id: 'geral', title: 'Limpeza, canal e check-up', text: 'Limpeza com ultrassom, tratamento de canal com anestesia localizada e acompanhamento da saúde da boca.', items: ['limpeza-e-prevencao', 'tratamento-de-canal'], extra: [] },
+  { id: 'sono', title: 'Ronco e bruxismo', text: 'Placa miorrelaxante para quem range ou aperta os dentes e aparelho intraoral para ronco e apneia.', items: ['ronco-e-bruxismo'], extra: [] },
 ];
